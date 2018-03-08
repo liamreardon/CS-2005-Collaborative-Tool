@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/rob/Dropbox/Schoolwork/2017winter/COMP2005/TestSite/venv"
+VIRTUAL_ENV="/Users/liamreardon/Documents/MUN/WINTER2018/2005/cs2005groupd/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
