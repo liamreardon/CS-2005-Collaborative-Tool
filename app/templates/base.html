@@ -1,0 +1,21 @@
+<!--
+    The base template from which all other pages derive
+    Jinja Arguments:
+        title : the title
+    -->
+
+<html>
+<head>
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>A Website</title>
+    {% endif %}
+</head>
+<body>
+<div>
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>
