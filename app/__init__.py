@@ -8,4 +8,4 @@ app.static_folder = 'static'
 db = SQLAlchemy(app)
 
 # must come after app declaration
-from app import routes
+from app import routes, models

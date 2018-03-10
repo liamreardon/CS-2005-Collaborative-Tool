@@ -1,1 +1,70 @@
 # Database models
+
+#region imports
+from app import db
+from datetime import datetime
+#endregion
+
+#region secondary tables
+thread_subscriptions = db.Table('thread_subscriptions',
+                                db.Column('user_id', db.Integer, db.ForeignKey('User.username')),
+                                db.Column('thread_id', db.Integer, db.ForeignKey('Thread.id'))
+                                )
+#endregion
+
+class User(db.Model):
+    """
+    A class to store user information
+    Fields:
+        id:                 Integer primary key
+        username:           self explanatory
+        password:           self explanatory
+        posts:              a list of all the posts this user has made
+        subs:               a list of all the threads this user has subscriptions to
+        email:              self explanatory
+    """
+    #fields
+    __tablename__ = 'User'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(128))
+    email = db.Column(db.String(128), index=True, unique=True)
+    #relationships
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    subs = db.relationship('Thread', secondary="thread_subscriptions", back_populates="subbed")
+
+class Post(db.Model):
+    """
+    A class to store user information
+    Fields:
+        id:         Integer primary key
+        title:      title of the post
+        text:       content of the post
+        timestamp:  UTC time the post was made
+        author:     relationship with user (1:n)
+        thread:     relationship with Thread (1:n)
+    """
+    __tablename__ = "Post"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(128))
+    text = db.Column(db.Text())
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    # relationships
+    author_id = db.Column(db.Integer,db.ForeignKey('User.id'))
+    thread_id = db.Column(db.Integer,db.ForeignKey('Thread.id'))
+
+
+class Thread(db.Model):
+    """
+    Thread represents a single forum thread
+    Fields:
+        id:     primary key
+        posts:  a list of posts in the thread
+        topic:  what the post is about
+        subbed: users who are subscribed to the thread
+    """
+    __tablename__ = "Thread"
+    id = db.Column(db.Integer, primary_key=True)
+    topic = db.Column(db.String(128))
+    posts = db.relationship('Post', backref='thread')
+    subbed = db.relationship('User', secondary="thread_subscriptions", back_populates="subs")

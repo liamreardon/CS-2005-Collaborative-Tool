@@ -2,8 +2,9 @@
 import os
 
 # get DB directory
-basedir = os.path.abspath(os.pardir)
-dbPath = basedir + "/app/databases/testDB.db"
+# basedir = os.path.abspath(os.pardir)
+basedir = os.path.dirname(__file__)
+dbPath = basedir + "/data/data.db"
 
 
 class Config:

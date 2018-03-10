@@ -1,0 +1,18 @@
+<!--
+    unit_testing.html
+    A temporary debugging section
+    Jinja Arguments:
+        posts:  a list of post objects, which will all be displayed iteratively
+-->
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="post">
+        {% for post in posts %}
+            <p>Title: {{ post.title }}
+            <p>Posted by: {{ post.author.username }}
+            <p>Time: {{ post.timestamp }}
+            <p>Text: {{ post.text }}
+        {% endfor %}
+    </div>
+{% endblock %}
