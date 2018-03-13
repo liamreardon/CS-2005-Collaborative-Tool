@@ -17,10 +17,7 @@ from app.models import *
 @app.route('/')
 @app.route('/index')
 def index():
-<<<<<<< HEAD
 
-=======
->>>>>>> login
     return render_template("index.html", title="Example Title", text="Hello: Dude")
 
 @app.route('/testing')
@@ -34,11 +31,8 @@ def testing():
     posts = make_posts(users)
     users = User.query.all()
     return render_template("unit_testing.html", title="Example Title", posts=posts)
-<<<<<<< HEAD
 
-    return render_template("index.html", title="Example Title", text="Hello: World")
 
-=======
     return render_template("index.html", title="Example Title", text="Hello: World")
 
 
