@@ -3,6 +3,7 @@
 #region imports
 from app import db
 from datetime import datetime
+from flask_login import UserMixin
 #endregion
 
 #region secondary tables
@@ -12,7 +13,7 @@ thread_subscriptions = db.Table('thread_subscriptions',
                                 )
 #endregion
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """
     A class to store user information
     Fields:
