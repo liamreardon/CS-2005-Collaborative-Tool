@@ -44,3 +44,11 @@ def make_posts(users=None):
     db.session.add_all(posts)
     db.session.commit()
     return posts
+
+def make_thread(users=None, posts=None):
+    t1 = Thread()
+    db.session.add(t1)
+    db.session.commit()
+    t1.posts.append(posts[0])
+    t1.subbed.append(users[0])
+    db.session.commit()

@@ -9,10 +9,14 @@
 {% block content %}
     <div class="post">
         {% for post in posts %}
+            <hr>
             <p>Title: {{ post.title }}
             <p>Posted by: {{ post.author.username }}
             <p>Time: {{ post.timestamp }}
             <p>Text: {{ post.text }}
+            <p>Thread: {{ post.thread }}
+            <p>User subbed:: {{ post.author.subs }}
+            <p>Subbed to thread: {{ post.thread.subbed }}
         {% endfor %}
     </div>
 {% endblock %}

@@ -29,11 +29,11 @@ def testing():
     init_db()
     users = make_users()
     posts = make_posts(users)
+    threads = make_thread(users,posts)
     users = User.query.all()
     return render_template("unit_testing.html", title="Example Title", posts=posts)
 
 
-    return render_template("index.html", title="Example Title", text="Hello: World")
 
 
 @app.route('/login', methods=['GET', 'POST'])
