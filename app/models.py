@@ -3,16 +3,30 @@
 #region imports
 from app import db
 from datetime import datetime
+from flask_login import UserMixin
 #endregion
 
-#region secondary tables
-thread_subscriptions = db.Table('thread_subscriptions',
-                                db.Column('user_id', db.Integer, db.ForeignKey('User.username')),
-                                db.Column('thread_id', db.Integer, db.ForeignKey('Thread.id'))
-                                )
-#endregion
+# todo: examine 'association proxy' and see if it applies here
+class ThreadSubscriptions(db.Model):
+    """
+    ThreadSubscriptions is an association table for users and threads
+    An association table is used to allow for notifications
+    fields:
+        user:   reference to a user
+        thread: the thread they're subscriped to
+        unseen:  a boolean, True if user has unread posts
+    """
+    __tablename__ = 'thread_subscriptions'
+    user_id = db.Column(db.Integer, db.ForeignKey('User.username'), primary_key=True)
+    thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'), primary_key=True)
+    db.Column('unseen', db.Boolean, default=False)
+    user = db.relationship("User", back_populates="subs")
+    thread = db.relationship("Thread", back_populates="subbed")
 
-class User(db.Model):
+
+# endregion
+
+class User(UserMixin, db.Model):
     """
     A class to store user information
     Fields:
@@ -31,8 +45,8 @@ class User(db.Model):
     email = db.Column(db.String(128), index=True, unique=True)
     #relationships
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    subs = db.relationship('Thread', secondary="thread_subscriptions", back_populates="subbed")
-
+    # subs = db.relationship('Thread', secondary="thread_subscriptions", back_populates="subbed")
+    subs = db.relationship('ThreadSubscriptions', back_populates='user')
 class Post(db.Model):
     """
     A class to store user information
@@ -67,4 +81,5 @@ class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(128))
     posts = db.relationship('Post', backref='thread')
-    subbed = db.relationship('User', secondary="thread_subscriptions", back_populates="subs")
+    # subbed = db.relationship('User', secondary="thread_subscriptions", back_populates="subs")
+    subbed = db.relationship('ThreadSubscriptions', back_populates='thread')
