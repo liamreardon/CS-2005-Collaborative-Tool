@@ -33,8 +33,19 @@ def testing():
     users = User.query.all()
     return render_template("unit_testing.html", title="Example Title", posts=posts)
 
-
-
+@app.route('/create_thread', methods=['GET', 'POST'])
+#@login_required()
+def create_thread():
+    form = ThreadForm()
+    if form.validate_on_submit():
+        #new_thread = Thread(topic=form.thread.data)
+        new_post = Post(title=form.thread.data, text=form.post.data)
+        #db.session.add(new_thread)
+        db.session.add(new_post)
+        db.session.commit()
+        return '<h1>Thread submitted.</h1>'
+        #return '<h1>' + form.thread.data + form.post.data + '</h1>'
+    return render_template('create_thread.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

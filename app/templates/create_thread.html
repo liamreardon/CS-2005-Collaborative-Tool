@@ -1,0 +1,26 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% include 'index.html' %}
+
+{% block title %}
+New Thread
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='newThread.css')}}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+      <form class="form-newThread" method="POST" action="/create_thread">
+        <h2 class="form-newThread-heading">Create a new thread</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.thread) }}
+        {{ wtf.form_field(form.post) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+      </form>
+
+    </div> <!-- /container -->
+{% endblock %}
