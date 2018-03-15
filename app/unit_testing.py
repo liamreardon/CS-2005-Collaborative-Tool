@@ -9,9 +9,11 @@ def drop_tables():
     db.reflect()
     db.drop_all()
 
+
 def init_db():
     drop_tables()
     db.create_all()
+
 
 def make_users():
     """
@@ -21,7 +23,7 @@ def make_users():
     for n in range(5):
         u = User()
         u.username = "testUser" + str(n)
-        u.password = "pw" + str(n)
+        u.password = "password" + str(n)
         u.email = "user" + str(n) + "@nowhere.com"
         users.append(u)
     db.session.add_all(users)
@@ -45,10 +47,9 @@ def make_posts(users=None):
     db.session.commit()
     return posts
 
+
 def make_thread(users=None, posts=None):
-    t1 = Thread()
-    db.session.add(t1)
-    db.session.commit()
-    t1.posts.append(posts[0])
-    t1.subbed.append(users[0])
-    db.session.commit()
+    if posts is not None:
+        t1 = Thread(posts[0])
+    else:
+        t1 = Thread()
