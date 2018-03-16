@@ -28,9 +28,9 @@ class ThreadSubscriptions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.username'))
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
-    unseen = db.Column('unseen', db.Boolean, default=False)
     user = db.relationship("User", back_populates="sub_id")
     thread = db.relationship("Thread", back_populates="subbed_id")
+    unseen = db.Column('unseen', db.Boolean, default=False)
 
     def __init__(self, user=None, thread=None):
         self.user = user
@@ -38,6 +38,32 @@ class ThreadSubscriptions(db.Model):
 
     def __repr__(self):
         return "ThreadSubscription object for thread: " + str(self.thread.topic)
+
+
+class TopicSubscriptions(db.Model):
+    """
+    TopicSubscriptions is an association table for users and topics
+    An association table is used to allow for notifications
+    fields:
+        id:     primary key
+        user:   reference to the user
+        name:  reference to the thread
+        unseen: boolean, True if user has unread posts
+    """
+    __tablename__ = 'topic_subscriptions'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
+    topic_id = db.Column(db.Integer, db.ForeignKey('Topic.id'))
+    user = db.relationship("User", back_populates="topic_id")  # todo add this to user
+    topic = db.relationship("Topic", back_populates="user_id")  # todo add this to name
+    unseen = db.Column('unseen', db.Boolean, default=False)
+
+    def __init__(self, user=None, topic=None):
+        self.user = user
+        self.topic = topic
+
+    def __repr__(self):
+        return "TopicSubscription association for " + str(self.user.username) + " and " + str(self.topic.name)
 
 
 # endregion
@@ -63,6 +89,8 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     sub_id = db.relationship('ThreadSubscriptions', back_populates='user')
     subs = association_proxy('sub_id', 'thread', creator=lambda t: ThreadSubscriptions(thread=t))
+    topic_id = db.relationship('TopicSubscriptions', back_populates='user')
+    topics = association_proxy('topic_id', 'topic', creator=lambda t: ThreadSubscriptions(topic=t))
 
     def __init__(self, *args, **kwargs):
         db.session.add(self)
@@ -103,6 +131,8 @@ class Post(db.Model):
     text = db.Column(db.Text())
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     # relationships
+    # topic_id = db.Column(db.Integer, db.ForeignKey('Topic.id'))
+    # topic = db.relationship('Topic', back_populates='posts')
     author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
 
@@ -117,21 +147,24 @@ class Thread(db.Model):
     Fields:
         id:     primary key
         posts:  a list of posts in the thread
-        topic:  what the post is about
+        name:  what the post is about
         subbed: users who are subscribed to the thread
+        topic:  the topic object associated with this thread
     """
     __tablename__ = "Thread"
     id = db.Column(db.Integer, primary_key=True)
-    topic = db.Column(db.String(128))
+    name = db.Column(db.String(128))
     # relationships
     posts = db.relationship('Post', backref='thread')
+    topic_id = db.Column(db.Integer, db.ForeignKey('Topic.id'))
+    topic = db.relationship('Topic', back_populates='threads')
     subbed_id = db.relationship('ThreadSubscriptions', back_populates='thread')
     subbed = association_proxy('subbed_id', 'user', creator=lambda u: ThreadSubscriptions(user=u))
 
     def __init__(self, first_post=None):
         """
         Creates a thread object that adds itself to the DB and commits
-        :param first_post: if supplied will set the post topic and subscribe the user to the thread
+        :param first_post: if supplied will set the post name and subscribe the user to the thread
         """
         db.session.add(self)
         if first_post:
@@ -146,7 +179,7 @@ class Thread(db.Model):
         :param first_post: the OP of the thread
         :return:
         """
-        self.topic = first_post.title
+        self.name = first_post.title
         self.posts = [first_post]
         self.subbed = [first_post.author]
         self.notify()
@@ -158,11 +191,21 @@ class Thread(db.Model):
         """
         self.posts.append(post)
         self.notify()
-        self.subbed.appent(post.author)
+        self.subbed.append(post.author)
 
     def notify(self):
         for sub in self.subbed_id:
             sub.unseen = True
 
     def __repr__(self):
-        return "Thread " + str(self.topic)
+        return "Thread " + str(self.name)
+
+
+class Topic(db.Model):
+    __tablename__ = 'Topic'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+    # relationships
+    threads = db.relationship("Thread", back_populates='topic')
+    user_id = db.relationship('TopicSubscriptions', back_populates='topic')
+    users = association_proxy('user_id', 'user', creator=lambda u: ThreadSubscriptions(user=u))
