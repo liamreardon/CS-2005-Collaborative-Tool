@@ -77,10 +77,10 @@ def signup():
 
     return render_template('signup.html', form=form)
 
-@app.route('/dashboard')
+@app.route('/home')
 @login_required
-def dashboard():
-    return render_template('dashboard.html', name=current_user.username)
+def home():
+    return render_template('home.html', name=current_user.username)
 
 @app.route('/logout')
 @login_required
