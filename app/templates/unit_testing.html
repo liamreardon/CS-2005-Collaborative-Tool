@@ -5,8 +5,8 @@
         posts:  a list of post objects, which will all be displayed iteratively
 -->
 {% extends "base.html" %}
-
 {% block content %}
+    {{ super() }}
     <div class="post">
         {% for post in posts %}
             <hr>
@@ -21,3 +21,5 @@
         {% endfor %}
     </div>
 {% endblock %}
+
+

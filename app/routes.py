@@ -26,12 +26,12 @@ def testing():
     Visiting this route will wipe the DB and perform some unit testing
     The objects will be printed to the site for debugging and validation
     """
-    init_db()
-    users = make_users()
-    posts = make_posts(users)
-    threads = make_thread(users,posts)
-    users = User.query.all()
-    return render_template("unit_testing.html", title="Example Title", posts=posts)
+    # init_db()
+    # users = make_users()
+    # posts = make_posts(users)
+    # threads = make_thread(users,posts)
+    # users = User.query.all()
+    return render_template("unit_testing.html", title="Example Title", posts=Post.query.all())
 
 @app.route('/create_thread', methods=['GET', 'POST'])
 #@login_required()

@@ -158,7 +158,7 @@ class Thread(db.Model):
         """
         self.posts.append(post)
         self.notify()
-        self.subbed.appent(post.author)
+        self.subbed.append(post.author)
 
     def notify(self):
         for sub in self.subbed_id:
