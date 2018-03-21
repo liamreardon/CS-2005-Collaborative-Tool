@@ -106,7 +106,11 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
 
-    def __init__(self):
+    def __init__(self, title, text, author_id, thread_id):
+        self.title = title
+        self.text = text
+        self.author_id = author_id
+        self.thread_id = thread_id
         db.session.add(self)
         db.session.commit()
 

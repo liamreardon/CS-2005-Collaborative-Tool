@@ -1,5 +1,5 @@
 # --- Imports ---
-from flask import render_template, session, redirect, url_for, request
+from flask import flash, render_template, session, redirect, url_for, request
 import os
 # --- Custom imports ---
 from app import app
@@ -36,16 +36,80 @@ def testing():
 @app.route('/create_thread', methods=['GET', 'POST'])
 #@login_required()
 def create_thread():
+    """
+    Creates a new thread with a title and a new post with a body and
+    commits it to the database.
+    """
     form = ThreadForm()
     if form.validate_on_submit():
-        #new_thread = Thread(topic=form.thread.data)
-        new_post = Post(title=form.thread.data, text=form.post.data)
-        #db.session.add(new_thread)
-        db.session.add(new_post)
+        new_thread = Thread()
+        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
+        new_thread.add_first_post(new_post)
         db.session.commit()
-        return '<h1>Thread submitted.</h1>'
-        #return '<h1>' + form.thread.data + form.post.data + '</h1>'
+        #flash('Thread submitted.')
+        return redirect(url_for('home'))
     return render_template('create_thread.html', form=form)
+
+@app.route('/view_threads', methods=['GET', 'POST'])
+#@login_required()
+def view_threads():
+    """
+    Displays all the threads within the database into
+    a table and displays the id, title, author, and
+    datetime.
+    """
+    threads = Thread.query.all()
+    return render_template('view_threads.html', threads=threads)
+
+@app.route('/view_thread/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def view_thread(id):
+    """
+    Displays all the posts within a specific thread and includes
+    a form to insert a post within that thread.
+    """
+    posts = Post.query.filter_by(thread_id=id).all()
+    current_thread = Thread.query.get(id)
+
+    form = PostForm()
+    if form.validate_on_submit():
+        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id)
+        current_thread.add_post(new_post)
+        #flash('Post submitted.')
+        return render_template('view_thread.html', form=form, posts=posts)
+    return render_template('view_thread.html', form=form, posts=posts)
+
+@app.route('/edit_post/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def edit_post(id):
+    """
+    Users who have created posts can edit the posts they have created.
+    """
+    form = PostForm()
+    if form.validate_on_submit():
+        form.thread.data = current_thread
+        form.post.data = current_post
+        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
+        current_thread.add_post(new_post)
+        #flash('Post editted.')
+        return render_template('edit_post.html', form=form)
+    return render_template('edit_post.html', form=form)
+
+@app.route('/edit_thread/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def edit_thread(id):
+    """
+    Users who have created threads can edit threads they have created.
+    """
+    form = ThreadForm()
+    if form.validate_on_submit():
+        form.thread.data = current_thread
+        form.post.data = current_post
+        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
+        current_thread.add_post(new_post)
+        #flash('Thread editted.')
+        return render_template('edit_thread.html', form=form)
+    return render_template('edit_thread.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

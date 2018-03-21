@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+View Thread
+{% endblock %}
+
+{% block body %}
+        {% for post in posts %}
+            <h3>{{post.id}}</h3>
+            <h3>{{post.text}}</h3>
+            <h3>{{post.author_id}}</h3>
+            <h3>{{post.datetime}}</h3>
+        {% endfor %}
+{% endblock %}
+
+{% block content %}>
+    <div class="container">
+      <form class="form-view_thread" method="POST" action="/view_thread">
+        <h2 class="form-view_thread">Create a new post</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.post) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+      </form>
+    </div> <!-- /container -->
+{% endblock %}

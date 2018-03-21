@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+Threads
+{% endblock %}
+
+{% block body %}
+    <h1>Threads</h1>
+        <ul class= "list-group">
+    	    {% for thread in threads %}
+    	        <li class="list-group-item"><a href="view_thread/{{thread.id}}">{{thread.topic}}</a></li>
+            {% endfor %}
+        </ul>
+{% endblock %}
