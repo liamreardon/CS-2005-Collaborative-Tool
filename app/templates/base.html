@@ -15,10 +15,9 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="{{ url_for('create_thread') }}">New Thread</a></li>
-                <li><a href="#">Profile</a></li>
-                <li><a href="{{ url_for('create_thread') }}">Create Thread</a></li>
                 {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('create_thread') }}">Create Thread</a></li>
+                    <li><a href="#">Profile</a></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
