@@ -90,7 +90,7 @@ class User(UserMixin, db.Model):
     sub_id = db.relationship('ThreadSubscriptions', back_populates='user')
     subs = association_proxy('sub_id', 'thread', creator=lambda t: ThreadSubscriptions(thread=t))
     topic_id = db.relationship('TopicSubscriptions', back_populates='user')
-    topics = association_proxy('topic_id', 'topic', creator=lambda t: ThreadSubscriptions(topic=t))
+    topics = association_proxy('topic_id', 'topic', creator=lambda t: TopicSubscriptions(topic=t))
 
     def __init__(self, *args, **kwargs):
         db.session.add(self)
@@ -202,10 +202,24 @@ class Thread(db.Model):
 
 
 class Topic(db.Model):
+    """
+    Topics are tags that can be added to threads
+    Users can subscribe to topics in order to be notified about any post made with that topic
+    """
     __tablename__ = 'Topic'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     # relationships
     threads = db.relationship("Thread", back_populates='topic')
     user_id = db.relationship('TopicSubscriptions', back_populates='topic')
-    users = association_proxy('user_id', 'user', creator=lambda u: ThreadSubscriptions(user=u))
+    users = association_proxy('user_id', 'user', creator=lambda u: TopicSubscriptions(user=u))
+
+    def add_thread(self, thread):
+        self.threads.append(thread)
+
+    def add_user(self, user):
+        self.users.append(user)
+
+    def notify(self):
+        for user in self.user_id:
+            user.unseen = True
