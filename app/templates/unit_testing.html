@@ -7,6 +7,10 @@
 {% extends "base.html" %}
 {% block content %}
     {{ super() }}
+    {% if current_user.is_authenticated %}
+        You are logged in as {{ current_user }}
+    {% endif %}
+
     <div class="post">
         {% for post in posts %}
             <hr>
