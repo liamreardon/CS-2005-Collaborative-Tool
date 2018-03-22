@@ -1,5 +1,11 @@
 {% extends "bootstrap/base.html" %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='base.css') }}">
+{% endblock %}
+
 {% block title %}
     Home
 {% endblock %}
@@ -51,7 +57,7 @@
 
 {% block content %}
     <div class="container-fluid">
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="center-block main">
 {% endblock %}
 </div>
 </div>

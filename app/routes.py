@@ -27,9 +27,10 @@ def testing():
     The objects will be printed to the site for debugging and validation
     """
     # init_db()
+    # topics = make_topics();
     # users = make_users()
     # posts = make_posts(users)
-    # threads = make_thread(users,posts)
+    # make_thread(users=users,posts=posts,topics=topics)
     # users = User.query.all()
     return render_template("unit_testing.html", title="Example Title", posts=Post.query.all())
 

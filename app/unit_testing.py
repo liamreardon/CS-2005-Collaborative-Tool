@@ -1,5 +1,6 @@
 from app import *
 from app.models import *
+import random  # todo delete me only for unit testing
 
 
 def drop_tables():
@@ -48,8 +49,16 @@ def make_posts(users=None):
     return posts
 
 
-def make_thread(users=None, posts=None):
-    if posts is not None:
-        t1 = Thread(posts[0])
+def make_thread(users=None, posts=None, topics=None):
+    if posts is not None and topics is None:
+        t1 = Thread(first_post=random.choice(posts))
+    elif posts is not None and topics is not None:
+        t1 = Thread(first_post=random.choice(posts), topic=random.choice(topics))
     else:
         t1 = Thread()
+
+
+def make_topics():
+    t1 = Topic("topic1")
+    t2 = Topic("topic2")
+    return [t1, t2]

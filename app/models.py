@@ -5,8 +5,8 @@ Classes:
     User: Holds all information about a specific user
     Post: A post represents a single post by a single user
     Thread: An ADT that contains references to many threads, and users subscribed to follow the thread
+    Topic: Serves as a way to group posts by topics as well as subscribe users to all posts tagged with the same name
 todo: consider refactoring all id and otherwise private variables to have a leading underscore
-todo: implement topics and topic notification (maybe as a new object)
 """
 from app import db
 from datetime import datetime
@@ -136,7 +136,7 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
 
-    def __init__(self):
+    def __init__(self, user=None, title=None, text=None, thread=None):
         db.session.add(self)
         db.session.commit()
 
@@ -161,7 +161,7 @@ class Thread(db.Model):
     subbed_id = db.relationship('ThreadSubscriptions', back_populates='thread')
     subbed = association_proxy('subbed_id', 'user', creator=lambda u: ThreadSubscriptions(user=u))
 
-    def __init__(self, first_post=None):
+    def __init__(self, first_post=None, topic=None):
         """
         Creates a thread object that adds itself to the DB and commits
         :param first_post: if supplied will set the post name and subscribe the user to the thread
@@ -169,6 +169,8 @@ class Thread(db.Model):
         db.session.add(self)
         if first_post:
             self.add_first_post(first_post)
+        if topic:
+            self.topic = topic;
         db.session.commit()
 
     def add_first_post(self, first_post):
@@ -223,3 +225,13 @@ class Topic(db.Model):
     def notify(self):
         for user in self.user_id:
             user.unseen = True
+
+    def __init__(self, topic_name=None):
+        """
+        Creates a topic object that adds itself to the DB and commits
+        :param topic_name: if supplied will set the topic name
+        """
+        db.session.add(self)
+        if topic_name:
+            self.name = topic_name
+        db.session.commit()
