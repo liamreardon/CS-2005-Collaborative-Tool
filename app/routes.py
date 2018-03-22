@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from app.loaders import *
 # --- BAD IMPORTS ---
-#todo: delete this
+# todo: delete this
 from app.unit_testing import *
 from app.models import *
 
@@ -17,8 +17,8 @@ from app.models import *
 @app.route('/')
 @app.route('/index')
 def index():
-
     return render_template("index.html", title="Example Title", text="Hello: Dude")
+
 
 @app.route('/testing')
 def testing():
@@ -26,26 +26,43 @@ def testing():
     Visiting this route will wipe the DB and perform some unit testing
     The objects will be printed to the site for debugging and validation
     """
-    # init_db()
-    # users = make_users()
-    # posts = make_posts(users)
-    # threads = make_thread(users,posts)
-    # users = User.query.all()
-    return render_template("unit_testing.html", title="Example Title", posts=Post.query.all())
+    if current_user is None:
+        # wipe DB and make dummy users
+        init_db()
+        users = make_users()
+        # user0 creates a new thread
+        topic1 = Topic("topic1")
+        p1 = Post(users[0], "this is a test post #1 in thread #1", title="Thread #1 Title")
+        thread1 = Thread(first_post=p1, topic=topic1)
+        # users 1 and 2 reply
+        p2 = Post(users[1], "this is a reply to test post 1", thread1)
+        p3 = Post(users[2], "this is a reply to test post 1", thread1)
+        # thread1.add_post(p2)
+        # thread1.add_post(p3)
+        # user 3 posts a new thread with the same topic
+        p4 = Post(users[3], "this is the first post in thread #2", title="Thread 2 title")
+        thread2 = Thread(first_post=p4, topic=topic1)
+        # user 4 will post a new thread with a new topic
+        topic2 = Topic("topic2")
+        p5 = Post(users[4], "this is a test post with a new topic", title="Thread 3 title")
+        thread3 = Thread(p5, topic2)
+    return render_template("unit_testing.html", title="Example Title", posts=Post.query.all(), topics=Topic.query.all())
+
 
 @app.route('/create_thread', methods=['GET', 'POST'])
-#@login_required()
+# @login_required()
 def create_thread():
     form = ThreadForm()
     if form.validate_on_submit():
-        #new_thread = Thread(topic=form.thread.data)
+        # new_thread = Thread(topic=form.thread.data)
         new_post = Post(title=form.thread.data, text=form.post.data)
-        #db.session.add(new_thread)
+        # db.session.add(new_thread)
         db.session.add(new_post)
         db.session.commit()
         return '<h1>Thread submitted.</h1>'
-        #return '<h1>' + form.thread.data + form.post.data + '</h1>'
+        # return '<h1>' + form.thread.data + form.post.data + '</h1>'
     return render_template('create_thread.html', form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,31 +79,29 @@ def login():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
 
     if form.validate_on_submit():
-
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         return render_template('redirectSignup.html')
-           
 
     return render_template('signup.html', form=form)
+
 
 @app.route('/home')
 @login_required
 def home():
     return render_template('home.html', name=current_user.username)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
-
-
