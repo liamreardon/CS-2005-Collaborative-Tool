@@ -47,7 +47,7 @@ def create_thread():
         new_thread.add_first_post(new_post)
         db.session.commit()
         #flash('Thread submitted.')
-        return redirect(url_for('home'))
+        return redirect(url_for('view_threads'))
     return render_template('create_thread.html', form=form)
 
 @app.route('/view_threads', methods=['GET', 'POST'])
@@ -68,15 +68,16 @@ def view_thread(id):
     Displays all the posts within a specific thread and includes
     a form to insert a post within that thread.
     """
-    posts = Post.query.filter_by(thread_id=id).all()
+    #posts = Post.query.filter_by(thread_id=id).all()
+    posts = Thread.query.filter_by(id=id).first().posts
     current_thread = Thread.query.get(id)
 
     form = PostForm()
     if form.validate_on_submit():
-        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id)
+        new_post = Post(title=current_thread.topic,text=form.post.data,author_id=current_user.id,thread_id=current_thread.id)
         current_thread.add_post(new_post)
         #flash('Post submitted.')
-        return render_template('view_thread.html', form=form, posts=posts)
+        return redirect(url_for('view_thread',id=id))
     return render_template('view_thread.html', form=form, posts=posts)
 
 @app.route('/edit_post/<string:id>', methods=['GET', 'POST'])
@@ -85,15 +86,14 @@ def edit_post(id):
     """
     Users who have created posts can edit the posts they have created.
     """
+    current_post = Post.query.get(id)
+
     form = PostForm()
     if form.validate_on_submit():
-        form.thread.data = current_thread
-        form.post.data = current_post
         new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
-        current_thread.add_post(new_post)
         #flash('Post editted.')
-        return render_template('edit_post.html', form=form)
-    return render_template('edit_post.html', form=form)
+        return redirect(url_for('view_thread',id=id))
+    return render_template('view_thread.html', form=form)
 
 @app.route('/edit_thread/<string:id>', methods=['GET', 'POST'])
 #@login_required()
@@ -101,15 +101,17 @@ def edit_thread(id):
     """
     Users who have created threads can edit threads they have created.
     """
+    current_thread = Thread.query.get(id)
+
     form = ThreadForm()
     if form.validate_on_submit():
-        form.thread.data = current_thread
-        form.post.data = current_post
-        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
-        current_thread.add_post(new_post)
+        new_thread = Thread()
+        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=current_thread.id)
+        new_thread.add_first_post(new_post)
+        db.session.commit()
         #flash('Thread editted.')
-        return render_template('edit_thread.html', form=form)
-    return render_template('edit_thread.html', form=form)
+        return redirect(url_for('view_thread',id=id))
+    return render_template('view_thread.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -163,6 +163,7 @@ class Thread(db.Model):
         self.posts.append(post)
         self.notify()
         self.subbed.append(post.author)
+        db.session.commit()
 
     def notify(self):
         for sub in self.subbed_id:

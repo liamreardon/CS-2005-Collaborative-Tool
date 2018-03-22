@@ -8,7 +8,7 @@ Classes:
 	PostForm: class for creating a post
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, BooleanField
+from wtforms import SubmitField,StringField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
 
 class LoginForm(FlaskForm):
@@ -59,7 +59,9 @@ class PostForm(FlaskForm):
 	Fields:
 	    thread: StringField which takes in the topic for a thread
 	    post: TextAreaField which takes in the body of a post
+	    submit: SubmitField which validates the post
 
 	    Thread and post fields both have InputRequired and length constraints
     """
-	post = TextAreaField('Body:', validators=[InputRequired(), Length(min=1, max=1000)])
+	post = TextAreaField('Add a post:', validators=[InputRequired(), Length(min=1, max=1000)])
+	submit = SubmitField('Submit')

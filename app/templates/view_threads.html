@@ -4,11 +4,14 @@
 Threads
 {% endblock %}
 
-{% block body %}
+{% block content %}
     <h1>Threads</h1>
         <ul class= "list-group">
     	    {% for thread in threads %}
     	        <li class="list-group-item"><a href="view_thread/{{thread.id}}">{{thread.topic}}</a></li>
+                {% if thread.author_id==current_user.id %}
+                    <h3><a href="edit_post/{{post.id}}" class="btn btn-default pullright">Edit</a></h3>
+                {% endif %}
             {% endfor %}
         </ul>
 {% endblock %}
