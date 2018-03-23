@@ -25,6 +25,7 @@ def make_users():
         password = "password" + str(n)
         email = "user" + str(n) + "@nowhere.com"
         u = User(username, password, email)
+        u.about_me = "I'm a test user! I don't really exist."
         users.append(u)
     db.session.add_all(users)
     db.session.commit()

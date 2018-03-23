@@ -11,7 +11,6 @@ from wtforms import StringField, TextAreaField, PasswordField, BooleanField, Sub
 from wtforms.validators import InputRequired, Email, Length, DataRequired
 
 
-
 class LoginForm(FlaskForm):
     """
     LoginForm is the class which creates the forms and variables for logging in a user.

@@ -19,8 +19,6 @@
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('create_thread') }}">Create Thread</a></li>
-                    <li><a href="#">Profile</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
                     <li><a href="{{ url_for('signup') }}">Signup</a></li>
@@ -36,7 +34,8 @@
                                 {{ current_user.username }}
                             </a>
                             <ul class="dropdown-menu nav" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{{ url_for('user', username = current_user.username ) }}">Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('subscriptions') }}">Subscriptions</a>
                                 </li>
                                 <li role="separator" class="divider"></li>

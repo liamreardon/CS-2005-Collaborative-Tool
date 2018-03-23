@@ -12,6 +12,7 @@ from app import db
 from datetime import datetime
 from flask_login import UserMixin
 from sqlalchemy.ext.associationproxy import association_proxy
+from hashlib import md5
 
 
 # region Association Classes
@@ -89,6 +90,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     password = db.Column(db.String(128))
     email = db.Column(db.String(128), index=True, unique=True)
+    about_me = db.Column(db.Text())
     # relationships
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     sub_id = db.relationship('ThreadSubscriptions', back_populates='user')
@@ -133,6 +135,11 @@ class User(UserMixin, db.Model):
             if topic.unseen:
                 topics.append(topic.thread)
         return topics
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.cs2005group.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
 
     def __repr__(self):
         usrname = "USERNAME NOT SET"

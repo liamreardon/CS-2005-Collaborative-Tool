@@ -24,7 +24,8 @@
             <p>Time: {{ post.timestamp }}
                 {#            <p>Title: {{ post.title }}#}
             <p>Text: {{ post.text }}
-            <p>Posted by: {{ post.author.username }}
+            <p>Posted by:
+                <a href="{{ url_for('user', username = post.author.username ) }}">{{ post.author.username }}</a>
             <p>User is subscribed to these posts: {{ post.author.subs }}
             <p>User is subscribed to these topics: {{ post.author.topics }}
             <p>User has unseen notifications: {{ post.author.has_notifications() }}
