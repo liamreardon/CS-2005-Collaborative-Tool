@@ -12,6 +12,7 @@ from app.loaders import *
 # todo: delete this
 from app.unit_testing import *
 from app.models import *
+from app.forms import EditProfileForm
 
 
 @app.route('/')
@@ -105,3 +106,41 @@ def home():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/subscriptions')
+@login_required
+def subscriptions():
+    return render_template('subscriptions.html')
+
+
+# region Profile
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
+
+
+# todo add about_me to the user object
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        # current_user.about_me = form.about_me.data
+        db.session.commit()
+        # flash('Your changes have been saved.') #flash not imported
+        return redirect(url_for('edit_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        # form.about_me.data = current_user.about_me
+    return render_template('edit_profile.html', title='Edit Profile',
+                           form=form)
+# endregion

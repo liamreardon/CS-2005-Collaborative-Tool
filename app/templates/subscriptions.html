@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Manage Subscriptions
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <h1>Your Subscriptions</h1>
+    <h2>Threads:</h2>
+    {% if current_user.subs %}
+        {{ current_user.subs }}
+    {% else %}
+        You aren't subscribed to any threads.
+    {% endif %}
+    <h2>Topics:</h2>
+    {% if current_user.topics %}
+        {{ current_user.topics }}
+    {% else %}
+        You aren't subscribed to any topics.
+    {% endif %}
+
+{% endblock %}
