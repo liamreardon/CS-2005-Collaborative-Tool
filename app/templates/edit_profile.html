@@ -3,6 +3,13 @@
 {% block content %}
     {{ super() }}
     <h1>Edit Profile</h1>
+    <br>
+
+
+    <a href="{{ url_for('change_password') }}" class="btn btn-info btn-sm" role="button">Change Password</a>
+    <br>
+    <br>
+
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
