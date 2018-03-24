@@ -55,7 +55,7 @@ class EditProfileForm(FlaskForm):
 
 class ChangePasswordForm(FlaskForm):
     password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
-    #confirm_password = 
+    confirm_password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
     submit = SubmitField('Submit')
     
     
