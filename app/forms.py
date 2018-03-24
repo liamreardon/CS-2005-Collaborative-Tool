@@ -21,9 +21,9 @@ class LoginForm(FlaskForm):
 
         Username and Password fields have InputRequired and Length constraints.
     """
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
-    remember = BooleanField('remember me')
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
+    remember = BooleanField('Remember Me')
 
 
 class RegisterForm(FlaskForm):
@@ -38,9 +38,9 @@ class RegisterForm(FlaskForm):
         which must be in format 'email@test.com'
 
     """
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)])
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
+    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)])
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
 
 
 class ThreadForm(FlaskForm):
@@ -51,4 +51,25 @@ class ThreadForm(FlaskForm):
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
+    password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
     submit = SubmitField('Submit')
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

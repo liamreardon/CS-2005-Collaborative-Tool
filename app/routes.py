@@ -90,7 +90,7 @@ def signup():
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        return render_template('redirectSignup.html')
+        return render_template('redirect_signup.html')
 
     return render_template('signup.html', form=form)
 
@@ -134,12 +134,16 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        current_user.password = hashed_password
         db.session.commit()
         # flash('Your changes have been saved.') #flash not imported
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
+        form.password.data = current_user.password
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
+
 # endregion
