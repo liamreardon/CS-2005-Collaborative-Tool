@@ -18,7 +18,7 @@ class LoginForm(FlaskForm):
         username: StringField which takes in the a users username
         password: PasswordField which takes in a users password
         remember: BooleanField which creates a box a user can check to stay logged in
-
+        
         Username and Password fields have InputRequired and Length constraints.
     """
     username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
@@ -33,9 +33,12 @@ class RegistrationForm(FlaskForm):
         email: StringField which takes in a users email
         username: StringField which takes in the a users username
         password: PasswordField which takes in a users password
+        confirm: PasswordField which takes in the users password which must be the same as 'password' field
 
         Username and Password fields both have InputRequired and length constraints, and the email field has an email constraint
-        which must be in format 'email@test.com'
+        which must be in format 'email@test.com'.
+        The 'password' field has DataRequired() and EqualTo() validators, which means that the this field must
+        contain data (cannt be blank) and must equal 'confirm' field, or else it will throw an error.
 
     """
     username = StringField('Username', [validators.Length(min=4, max=25)])
@@ -57,6 +60,15 @@ class EditProfileForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class ChangePasswordForm(FlaskForm):
+    """
+    ChangePasswordForm is the class which creates the forms and variables for changing a users password.
+    fields:
+        password: PasswordField which takes in a users password
+        confirm: PasswordField which takes in the users password which must be the same as 'password' field
+
+        The 'password' field has DataRequired() and EqualTo() validators, which means that the this field must
+        contain data (cannt be blank) and must equal 'confirm' field, or else it will throw an error.
+    """
     password = PasswordField('New Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')])
