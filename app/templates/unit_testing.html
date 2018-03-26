@@ -11,18 +11,25 @@
         You are logged in as {{ current_user }}
     {% endif %}
 
+    <p>Topics are:</p>
+    {% for topic in topics %}
+        {{ topic.name }}
+    {% endfor %}
+
     <div class="post">
         {% for post in posts %}
             <hr>
-            <p>Title: {{ post.title }}
-            <p>Posted by: {{ post.author.username }}
-            <p>Time: {{ post.timestamp }}
-            <p>Text: {{ post.text }}
             <p>Thread: {{ post.thread }}
-            <p>Topic: {{ post.topic }}
-            <p>User subbed: {{ post.author.subs }}
+            <p>Topic: {{ post.thread.topic }}
+            <p>Time: {{ post.timestamp }}
+                {#            <p>Title: {{ post.title }}#}
+            <p>Text: {{ post.text }}
+            <p>Posted by:
+                <a href="{{ url_for('user', username = post.author.username ) }}">{{ post.author.username }}</a>
+            <p>User is subscribed to these posts: {{ post.author.subs }}
+            <p>User is subscribed to these topics: {{ post.author.topics }}
             <p>User has unseen notifications: {{ post.author.has_notifications() }}
-            <p>Subbed to thread: {{ post.thread.subbed }}
+            <p>Users subscribed to this thread: {{ post.thread.subbed }}
         {% endfor %}
     </div>
 {% endblock %}
