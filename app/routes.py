@@ -1,5 +1,5 @@
 # --- Imports ---
-from flask import render_template, session, redirect, url_for, request
+from flask import render_template, session, redirect, url_for, request, flash
 import os
 # --- Custom imports ---
 from app import app
@@ -83,15 +83,14 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = RegisterForm()
-
+    form = RegistrationForm(request.form)
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        return render_template('redirect_signup.html')
-
+        flash('Thanks for registering!')
+        return redirect(url_for('login'))
     return render_template('signup.html', form=form)
 
 
@@ -112,7 +111,6 @@ def logout():
 @login_required
 def subscriptions():
     return render_template('subscriptions.html')
-
 
 # region Profile
 
@@ -146,12 +144,12 @@ def edit_profile():
 
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
-    form = ChangePasswordForm()
+    form = ChangePasswordForm(request.form)
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         current_user.password = hashed_password
         db.session.commit()
-        # flash('Your changes have been saved.') #flash not imported
+        flash('Your changes have been saved.')
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         hashed_password = generate_password_hash(form.password.data, method='sha256')

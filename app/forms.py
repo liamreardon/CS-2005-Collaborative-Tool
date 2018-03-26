@@ -7,7 +7,7 @@ Classes:
 	ThreadForm: class for creating a new thread
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SubmitField, validators
 from wtforms.validators import InputRequired, Email, Length, DataRequired
 
 
@@ -26,7 +26,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
 
 
-class RegisterForm(FlaskForm):
+class RegistrationForm(FlaskForm):
     """
     RegistrationForm is the class which creates the forms and variables for signing up a user.
     fields:
@@ -38,10 +38,13 @@ class RegisterForm(FlaskForm):
         which must be in format 'email@test.com'
 
     """
+    username = StringField('Username', [validators.Length(min=4, max=25)])
     email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)])
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
-
+    password = PasswordField('New Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
 
 class ThreadForm(FlaskForm):
     thread = StringField('Title:', validators=[InputRequired(), Length(min=1, max=128)])
@@ -54,11 +57,13 @@ class EditProfileForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class ChangePasswordForm(FlaskForm):
-    password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
-    confirm_password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
+    password = PasswordField('New Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')])
+
+    confirm = PasswordField('Repeat Password')
     submit = SubmitField('Submit')
-    
-    
+
 
 
 
