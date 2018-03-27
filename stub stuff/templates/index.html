@@ -1,0 +1,16 @@
+<!--
+    index.html
+    The first page you visit, I guess
+    Jinja Arguments:
+        text     :  body text
+-->
+{% extends "base.html" %}
+
+{% block title %}
+    Project Name
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+
+{% endblock %}
