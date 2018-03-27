@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+View Thread
+{% endblock %}
+
+{% block content %}
+    <h2>Thread: {{current_thread.name}}</h2>
+    {% for post in posts %}
+        <div class="well">
+            <h3>Comment: {{post.text}}</h3>
+            <h3>Created by: {{post.author}}</h3>
+            <h3>Date: {{post.timestamp}}</h3>
+            {% if post.author_id==current_user.id %}
+            <h3><a href="edit_post/{{post.id}}" class="btn btn-default pullright">Edit</a></h3>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <!-- <div class="container">
+      <form class="form-view_thread" method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.post) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+      </form> -->
+
+      <form class="" method="POST" action="">
+        <h2 class=""></h2>
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.post) }}
+        {{ form.submit() }}
+        <!-- <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button> -->
+      </form>
+    </div> <!-- /container -->
+{% endblock %}

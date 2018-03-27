@@ -71,8 +71,8 @@ class PostForm(FlaskForm):
 
         Thread and post fields both have InputRequired and length constraints
     """
-	post = TextAreaField('Add a post:', validators=[InputRequired(), Length(min=1, max=1000)])
-	submit = SubmitField('Submit')
+    post = TextAreaField('Add a post:', validators=[InputRequired(), Length(min=1, max=1000)])
+    submit = SubmitField('Submit')
 
 class TopicForm(FlaskForm):
     """
@@ -105,25 +105,3 @@ class ChangePasswordForm(FlaskForm):
 
     confirm = PasswordField('Repeat Password')
     submit = SubmitField('Submit')
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
