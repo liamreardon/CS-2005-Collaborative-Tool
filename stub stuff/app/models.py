@@ -73,7 +73,10 @@ class Group(db.Model):
             db.session.add(self)
             db.session.commit()
         
-        #def add_user(self, User.username)
+        def add_user(self, User.username):
+            self.users.append(User.username)
+            db.session.add(self)
+            db.session.commit()
 
 #another class for messages (?)
 
