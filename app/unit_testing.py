@@ -21,11 +21,10 @@ def make_users():
     """
     users = []
     for n in range(5):
-        username = "testUser" + str(n)
-        password = "password" + str(n)
-        email = "user" + str(n) + "@nowhere.com"
-        u = User(username, password, email)
-        u.about_me = "I'm a test user! I don't really exist."
+        u = User()
+        u.username = "testUser" + str(n)
+        u.password = "password" + str(n)
+        u.email = "user" + str(n) + "@nowhere.com"
         users.append(u)
     db.session.add_all(users)
     db.session.commit()
@@ -49,18 +48,8 @@ def make_posts(users=None):
     return posts
 
 
-def make_thread(users=None, posts=None, topics=None):
-    if posts is not None and topics is not None:
-        t1 = Thread(first_post=posts[0], topic=topics[0])
+def make_thread(users=None, posts=None):
     if posts is not None:
         t1 = Thread(posts[0])
     else:
         t1 = Thread()
-
-
-def make_topics():
-    topics = []
-    for n in range(3):
-        t = Topic(name="topic" + str(n))
-        topics.append(t)
-    return topics

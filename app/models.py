@@ -2,22 +2,17 @@
 models.py holds the information for all the persistent classes used in the project
 Classes are implemented using Flask-SQLAlchemy
 Classes:
-    User:   A single user and all their information
-    Thread: A series of posts made by many users in response to eachother
-    Post:   A single post by a single user within a thread
-    Topic:  Topics are user-submitted strings that are used to classify and group threads by topic
+    User: Holds all information about a specific user
+    Post: A post represents a single post by a single user
+    Thread: An ADT that contains references to many threads, and users subscribed to follow the thread
 todo: consider refactoring all id and otherwise private variables to have a leading underscore
+todo: implement topics and topic notification (maybe as a new object)
 """
 from app import db
 from datetime import datetime
 from flask_login import UserMixin
 from sqlalchemy.ext.associationproxy import association_proxy
-from hashlib import md5
 
-
-# region Association Classes
-# Association classes are used by SQLAlchemy to manage many-to-many relationships
-# Outside of this module they should not need to be referenced directly
 
 class ThreadSubscriptions(db.Model):
     """
@@ -26,7 +21,7 @@ class ThreadSubscriptions(db.Model):
     fields:
         id:     primary key
         user:   reference to a user
-        thread: the thread they're subscribed to
+        thread: the thread they're subscriped to
         unseen: boolean, True if user has unread posts
     """
     __tablename__ = 'thread_subscriptions'
@@ -52,15 +47,15 @@ class TopicSubscriptions(db.Model):
     fields:
         id:     primary key
         user:   reference to the user
-        name:   reference to the thread
+        name:  reference to the thread
         unseen: boolean, True if user has unread posts
     """
     __tablename__ = 'topic_subscriptions'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     topic_id = db.Column(db.Integer, db.ForeignKey('Topic.id'))
-    user = db.relationship("User", back_populates="topic_id")
-    topic = db.relationship("Topic", back_populates="user_id")
+    user = db.relationship("User", back_populates="topic_id")  # todo add this to user
+    topic = db.relationship("Topic", back_populates="user_id")  # todo add this to name
     unseen = db.Column('unseen', db.Boolean, default=False)
 
     def __init__(self, user=None, topic=None):
@@ -90,7 +85,6 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     password = db.Column(db.String(128))
     email = db.Column(db.String(128), index=True, unique=True)
-    about_me = db.Column(db.Text())
     # relationships
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     sub_id = db.relationship('ThreadSubscriptions', back_populates='user')
@@ -98,18 +92,11 @@ class User(UserMixin, db.Model):
     topic_id = db.relationship('TopicSubscriptions', back_populates='user')
     topics = association_proxy('topic_id', 'topic', creator=lambda t: TopicSubscriptions(topic=t))
 
-    def __init__(self, username, password, email, **kwargs):
-        """
-        Constructor for user
-        Adds the required fields and commits the object to the database
-        """
-        self.username = username
-        self.email = email
-        self.password = password
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+    def __init__(self, *args, **kwargs):
         db.session.add(self)
         db.session.commit()
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def has_notifications(self):
         """
@@ -119,27 +106,6 @@ class User(UserMixin, db.Model):
             if sub.unseen:
                 return True
         return False
-
-    # todo this needs to be tested
-    def get_unseen_threads(self):
-        threads = []
-        for sub in self.sub_id:
-            if sub.unseen:
-                threads.append(sub.thread)
-        return threads
-
-    # todo this needs to be tested
-    def get_unseen_topics(self):
-        topics = []
-        for topic in self.topic_id:
-            if topic.unseen:
-                topics.append(topic.thread)
-        return topics
-
-    def avatar(self, size):
-        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return 'https://www.cs2005group.com/avatar/{}?d=identicon&s={}'.format(
-            digest, size)
 
     def __repr__(self):
         usrname = "USERNAME NOT SET"
@@ -165,38 +131,16 @@ class Post(db.Model):
     text = db.Column(db.Text())
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     # relationships
+    # topic_id = db.Column(db.Integer, db.ForeignKey('Topic.id'))
+    # topic = db.relationship('Topic', back_populates='posts')
     author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
 
-<<<<<<< HEAD
     def __init__(self, title, text, author_id, thread_id):
         self.title = title
         self.text = text
         self.author_id = author_id
         self.thread_id = thread_id
-=======
-    def __init__(self, user, text, thread=None, title=None):
-        """
-        Creates a post object and commits it to the database
-        If a reference to a thread is provided this post is automatically appended
-        If the passed thread has no posts this post will be considered the first post and will initialize the thread
-        NOTE: Threads can only be initialized with posts that have a title
-        Otherwise the post will be appended as a child post to the thread
-        If no thread is passed then this post must be added using add_post or add_first_post on the thread elsewhere
-        """
-        self.author = user
-        self.text = text
-        self.title = title
-        self.thread = thread
-        if thread is not None:
-            if thread.posts == []:
-                if title is None:
-                    raise ValueError("You cannot initialize an empty thread with a post that has no title!")
-                else:
-                    thread.add_first_post(self)
-            else:
-                thread.add_post(self)
->>>>>>> master
         db.session.add(self)
         db.session.commit()
 
@@ -204,10 +148,6 @@ class Post(db.Model):
 class Thread(db.Model):
     """
     Thread represents a single forum thread
-    Threads must be linked to a 'first post' which must have a title
-    The title of the first post becomes the 'name' of the thread
-    You can initialize the first post by passing it as an argument in the constructor
-    If you do not initialize with the constructor then you must add one using add_first_post()
     Fields:
         id:     primary key
         posts:  a list of posts in the thread
@@ -225,12 +165,11 @@ class Thread(db.Model):
     subbed_id = db.relationship('ThreadSubscriptions', back_populates='thread')
     subbed = association_proxy('subbed_id', 'user', creator=lambda u: ThreadSubscriptions(user=u))
 
-    def __init__(self, first_post=None, topic=None):
+    def __init__(self, first_post=None):
         """
         Creates a thread object that adds itself to the DB and commits
         :param first_post: if supplied will set the post name and subscribe the user to the thread
         """
-        self.topic = topic
         db.session.add(self)
         if first_post:
             self.add_first_post(first_post)
@@ -247,11 +186,11 @@ class Thread(db.Model):
         self.name = first_post.title
         self.posts = [first_post]
         self.subbed = [first_post.author]
+        self.notify()
 
     def add_post(self, post):
         """
         Adds a post to the thread and notifies the users
-        Automatically subscribes the user who posted to this thread
         :param post:
         """
         self.posts.append(post)
@@ -259,13 +198,7 @@ class Thread(db.Model):
         self.subbed.append(post.author)
         db.session.commit()
 
-    def add_topic(self, topic):
-        self.topic = topic
-
     def notify(self):
-        """
-        Sets 'unseen' flags for every subscribed user
-        """
         for sub in self.subbed_id:
             sub.unseen = True
 
@@ -277,33 +210,14 @@ class Topic(db.Model):
     """
     Topics are tags that can be added to threads
     Users can subscribe to topics in order to be notified about any post made with that topic
-    Topics must have unique names, attempting to create a topic with a name that already exists will throw an error
-    You can do a check for a name manually and create the topic if the name doesn't exist...
-    Alternatively use the class method get() to return or create the topic when appropriate
-    todo: can we avoid the singleton shenanigans?
     """
     __tablename__ = 'Topic'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True)
+    name = db.Column(db.String(128))
     # relationships
     threads = db.relationship("Thread", back_populates='topic')
     user_id = db.relationship('TopicSubscriptions', back_populates='topic')
     users = association_proxy('user_id', 'user', creator=lambda u: TopicSubscriptions(user=u))
-
-    @classmethod
-    def get(cls, name):
-        q = Topic.query.filter_by(name=name).first()
-        if q is None:
-            return Topic(name)
-        else:
-            return q
-
-    def __init__(self, name):
-        if Topic.query.filter_by(name=name).first() is not None:
-            raise ValueError("You have attempted to create a Topic with a pre-existing name, use Topic.get() instead")
-        self.name = name
-        db.session.add(self)
-        db.session.commit()
 
     def add_thread(self, thread):
         self.threads.append(thread)
@@ -314,6 +228,3 @@ class Topic(db.Model):
     def notify(self):
         for user in self.user_id:
             user.unseen = True
-
-    def __repr__(self):
-        return "Topic " + self.name

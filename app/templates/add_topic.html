@@ -2,16 +2,15 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-Edit Thread
+Add Topic
 {% endblock %}
 
 {% block content %}
     <div class="container">
-      <form class="form-edit_thread" method="POST" action="">
-        <h2 class="form-edit_thread-heading">Edit existing thread</h2>
+      <form class="form-create_thread" method="POST" action="">
+        <h2 class="form-create_thread-heading">Add a new topic</h2>
         {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.thread) }}
-        {{ wtf.form_field(form.post) }}
+        {{ wtf.form_field(form.topic) }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form>
     </div> <!-- /container -->
