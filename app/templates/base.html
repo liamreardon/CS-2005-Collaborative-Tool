@@ -19,6 +19,7 @@
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('create_thread') }}">Create Thread</a></li>
+                    <li><a href="{{ url_for('view_threads') }}">View Threads</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
                     <li><a href="{{ url_for('signup') }}">Signup</a></li>

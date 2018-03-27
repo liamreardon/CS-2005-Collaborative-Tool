@@ -54,19 +54,106 @@ def testing():
 
 
 @app.route('/create_thread', methods=['GET', 'POST'])
-# @login_required()
+#@login_required()
 def create_thread():
+    """
+    Create a new thread with a title and a new post
+    with a body and commits it to the database.
+    """
     form = ThreadForm()
     if form.validate_on_submit():
-        # new_thread = Thread(topic=form.thread.data)
-        new_post = Post(title=form.thread.data, text=form.post.data)
-        # db.session.add(new_thread)
-        db.session.add(new_post)
+        new_thread = Thread()
+        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
+        new_thread.add_first_post(new_post)
+        db.session.add(new_thread)
         db.session.commit()
-        return '<h1>Thread submitted.</h1>'
-        # return '<h1>' + form.thread.data + form.post.data + '</h1>'
+        #flash('Thread submitted.')
+        return redirect(url_for('view_threads'))
     return render_template('create_thread.html', form=form)
 
+@app.route('/add_topic/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def add_topic(id):
+    """
+    Create a new topic for a thread and commits
+    it to the database.
+    """
+    current_thread=Thread.query.get(id)
+
+    form = TopicForm()
+    if form.validate_on_submit():
+        new_topic = Topic(name=form.topic.data)
+        new_topic.add_thread(current_thread)
+        db.session.add(new_topic)
+        db.session.commit()
+        #flash('Thread submitted.')
+        return redirect(url_for('view_threads'))
+    return render_template('add_topic.html', form=form)
+
+@app.route('/view_threads', methods=['GET', 'POST'])
+#@login_required()
+def view_threads():
+    """
+    Insert all the threads within the database into
+    a table and display the id, title, author, and
+    datetime of each thread.
+    """
+    threads = Thread.query.all()#topic.author.username
+    return render_template('view_threads.html', threads=threads)
+
+@app.route('/view_thread/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def view_thread(id):
+    """
+    Display all the posts within a thread and include
+    a form to create a new post within that thread.
+    """
+    posts = Post.query.filter_by(thread_id=id).all()
+    #posts = Thread.query.filter_by(id=id).first().posts
+    current_thread = Thread.query.get(id)
+
+    form = PostForm()
+    if form.validate_on_submit():
+        new_post = Post(title=current_thread.name,text=form.post.data,author_id=current_user.id,thread_id=current_thread.id)
+        current_thread.add_post(new_post)
+        #flash('Post submitted.')
+        return redirect(url_for('view_thread',id=id))
+    return render_template('view_thread.html', form=form, posts=posts, current_thread=current_thread)
+
+@app.route('/view_thread/edit_post/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def edit_post(id):
+    """
+    Identify a post created by the user and allow the user
+    to edit that post.
+    """
+    current_post = Post.query.get(id)
+
+    form = PostForm(post=current_post.text)
+    if form.validate_on_submit():
+        current_post.text = form.post.data
+        db.session.commit()
+        #flash('Post editted.')
+        return redirect(url_for('view_thread', id=current_post.thread_id))
+    return render_template('edit_post.html', id=id, form=form, post=current_post)
+
+@app.route('/edit_thread/<string:id>', methods=['GET', 'POST'])
+#@login_required()
+def edit_thread(id):
+    """
+    Identify a thread created by the user and allow the user 
+    to edit that thread.
+    """
+    current_thread = Thread.query.get(id)
+
+    form = ThreadForm(thread=current_thread.name, post=current_thread.posts[0].text)
+    if form.validate_on_submit():
+        current_thread.name = form.thread.data
+        current_thread.posts[0].text = form.post.data
+        db.session.commit()
+        #flash('Thread editted.')
+        return redirect(url_for('view_threads', id=id))
+    return render_template('edit_thread.html', id=id, form=form, thread=current_thread)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
