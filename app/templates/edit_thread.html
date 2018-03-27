@@ -7,7 +7,7 @@ Edit Thread
 
 {% block content %}
     <div class="container">
-      <form class="form-edit_thread" method="POST" action="">
+      <form class="form-edit_thread" method="POST" action="/edit_thread">
         <h2 class="form-edit_thread-heading">Edit existing thread</h2>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.thread) }}

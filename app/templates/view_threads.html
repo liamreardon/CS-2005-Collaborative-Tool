@@ -5,26 +5,13 @@ Threads
 {% endblock %}
 
 {% block content %}
-  <h1>Threads</h1>
-    <table class="table table-striped">
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Date</th>
-        <th>Topics</th>
-      </tr>
-        {% for thread in threads %}
-    	  <tr>
-    	  	<td>{{thread.id}}</td>
-    	  	<td><a href="view_thread/{{thread.id}}">{{thread.name}}</a></td>
-    	  	{% if thread.posts[0].author_id==current_user.id %}
-              <td><a href="edit_thread/{{thread.id}}" class="btn btn-default">Edit</a></td>
-            {% else %}
-              <td>{{thread.posts[0].author}}</td>
-            {% endif %}
-    	  	<td>{{thread.posts[0].timestamp}}</td>
-    	  	<td><a href="view_topic/{{thread.topic}}">{{thread.topic}}</a></td>
-          </tr>
-        {% endfor %}
+    <h1>Threads</h1>
+        <ul class= "list-group">
+    	    {% for thread in threads %}
+    	        <li class="list-group-item"><a href="view_thread/{{thread.id}}">{{thread.topic}}</a></li>
+                {% if thread.author_id==current_user.id %}
+                    <h3><a href="edit_post/{{post.id}}" class="btn btn-default pullright">Edit</a></h3>
+                {% endif %}
+            {% endfor %}
+        </ul>
 {% endblock %}
