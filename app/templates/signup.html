@@ -18,5 +18,8 @@
             {{ wtf.form_field(form.confirm)}}
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
         </form>
+        <h3><center>Already have an account?
+            <a href="{{ url_for('login') }}">Login</a></center>
+        </h3>
     </div> <!-- /container -->
 {% endblock %}
