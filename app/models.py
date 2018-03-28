@@ -139,11 +139,16 @@ class User(UserMixin, db.Model):
 
     def get_feed(self):
         feed = set()
-        for post in self.subs:
-            feed.add(post)
+        for thread in self.subs:
+            for thread_post in thread.posts:
+                if thread_post.author == self:
+                    continue
+                feed.add(thread_post)
         for topic in self.topics:
             for topic_thread in topic.threads:
                 for topic_post in topic_thread.posts:
+                    if topic_post.author == self:
+                        continue
                     feed.add(topic_post)
         feed = sorted(list(feed), key=lambda post: post.timestamp, reverse=True)
         return feed

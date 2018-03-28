@@ -62,6 +62,7 @@ def create_thread():
     """
     form = ThreadForm()
     if form.validate_on_submit():
+        print("Validating")
         new_thread = Thread()
         new_topic = Topic(name=form.topic.data)
         new_post = Post(title=form.thread.data,text=form.post.data,user=current_user)
