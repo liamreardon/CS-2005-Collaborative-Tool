@@ -60,6 +60,7 @@ class ThreadForm(FlaskForm):
         Thread and post fields both have InputRequired and length constraints
     """
     thread = StringField('Title:', validators=[InputRequired(), Length(min=1, max=128)])
+    topic = StringField('Topic:', validators=[InputRequired(), Length(min=1, max=128)])
     post = TextAreaField('Body:', validators=[InputRequired(), Length(min=1, max=1000)])
 
 class PostForm(FlaskForm):
@@ -72,16 +73,6 @@ class PostForm(FlaskForm):
         Thread and post fields both have InputRequired and length constraints
     """
     post = TextAreaField('Add a post:', validators=[InputRequired(), Length(min=1, max=1000)])
-    submit = SubmitField('Submit')
-
-class TopicForm(FlaskForm):
-    """
-    TopicForm is a class which creates the forms and variables for adding a topic.
-    Fields:
-        topic: TextAreaField which takes in the body of a post
-        submit: SubmitField which validates the post
-    """
-    topic = StringField('Add Topic:', validators=[InputRequired(), Length(min=1, max=128)])
     submit = SubmitField('Submit')
 
 class EditProfileForm(FlaskForm):

@@ -63,32 +63,15 @@ def create_thread():
     form = ThreadForm()
     if form.validate_on_submit():
         new_thread = Thread()
-        new_post = Post(title=form.thread.data,text=form.post.data,author_id=current_user.id,thread_id=new_thread.id)
+        new_topic = Topic(name=form.topic.data)
+        new_post = Post(title=form.thread.data,text=form.post.data,user=current_user)
         new_thread.add_first_post(new_post)
+        new_thread.add_topic(new_topic)
         db.session.add(new_thread)
         db.session.commit()
         #flash('Thread submitted.')
         return redirect(url_for('view_threads'))
     return render_template('create_thread.html', form=form)
-
-@app.route('/add_topic/<string:id>', methods=['GET', 'POST'])
-#@login_required()
-def add_topic(id):
-    """
-    Create a new topic for a thread and commits
-    it to the database.
-    """
-    current_thread=Thread.query.get(id)
-
-    form = TopicForm()
-    if form.validate_on_submit():
-        new_topic = Topic(name=form.topic.data)
-        new_topic.add_thread(current_thread)
-        db.session.add(new_topic)
-        db.session.commit()
-        #flash('Thread submitted.')
-        return redirect(url_for('view_threads'))
-    return render_template('add_topic.html', form=form)
 
 @app.route('/view_threads', methods=['GET', 'POST'])
 #@login_required()
@@ -114,8 +97,9 @@ def view_thread(id):
 
     form = PostForm()
     if form.validate_on_submit():
-        new_post = Post(title=current_thread.name,text=form.post.data,author_id=current_user.id,thread_id=current_thread.id)
+        new_post = Post(title=current_thread.name,text=form.post.data,user=current_user)
         current_thread.add_post(new_post)
+        db.session.commit()
         #flash('Post submitted.')
         return redirect(url_for('view_thread',id=id))
     return render_template('view_thread.html', form=form, posts=posts, current_thread=current_thread)
@@ -145,10 +129,12 @@ def edit_thread(id):
     to edit that thread.
     """
     current_thread = Thread.query.get(id)
+    #current_topic = Topic.query.get(name=id)
 
-    form = ThreadForm(thread=current_thread.name, post=current_thread.posts[0].text)
+    form = ThreadForm(thread=current_thread.name, topic=current_thread.topic.name, post=current_thread.posts[0].text)
     if form.validate_on_submit():
         current_thread.name = form.thread.data
+        current_thread.topic.name = form.topic.data
         current_thread.posts[0].text = form.post.data
         db.session.commit()
         #flash('Thread editted.')

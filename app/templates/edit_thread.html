@@ -11,6 +11,7 @@ Edit Thread
         <h2 class="form-edit_thread-heading">Edit existing thread</h2>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.thread) }}
+        {{ wtf.form_field(form.topic) }}
         {{ wtf.form_field(form.post) }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form>
