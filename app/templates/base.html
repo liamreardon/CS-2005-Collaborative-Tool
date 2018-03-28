@@ -29,6 +29,7 @@
             {% if current_user.is_authenticated %}
                 <div class="navbar-collapse collapse navbar-right">
                     <ul class="nav navbar-nav nav-item dropdown">
+                        <li><a href="{{ url_for('alerts') }}">Alerts</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

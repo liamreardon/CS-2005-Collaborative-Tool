@@ -23,7 +23,7 @@ Threads
             {% else %}
               <td>{{thread.posts[0].author}}</td>
             {% endif %}
-          <td>{{thread.posts[0].timestamp}}</td>
+            <td>{{ thread.posts[0].get_time() }}</td>
           <td><a href="view_topic/{{thread.topic}}">{{thread.topic.name}}</a></td>
           </tr>
         {% endfor %}

@@ -9,8 +9,9 @@ Classes:
 todo: consider refactoring all id and otherwise private variables to have a leading underscore
 """
 from app import db
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_login import UserMixin
+from sqlalchemy import desc
 from sqlalchemy.ext.associationproxy import association_proxy
 from hashlib import md5
 
@@ -136,6 +137,17 @@ class User(UserMixin, db.Model):
                 topics.append(topic.thread)
         return topics
 
+    def get_feed(self):
+        feed = set()
+        for post in self.subs:
+            feed.add(post)
+        for topic in self.topics:
+            for topic_thread in topic.threads:
+                for topic_post in topic_thread.posts:
+                    feed.add(topic_post)
+        feed = sorted(list(feed), key=lambda post: post.timestamp, reverse=True)
+        return feed
+
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.cs2005group.com/avatar/{}?d=identicon&s={}'.format(
@@ -145,7 +157,7 @@ class User(UserMixin, db.Model):
         usrname = "USERNAME NOT SET"
         if self.username is not None:
             usrname = self.username
-        return "User " + self.username
+        return self.username
 
 
 class Post(db.Model):
@@ -167,6 +179,25 @@ class Post(db.Model):
     # relationships
     author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
+
+    def get_time(self, relative=True):
+        """
+        Gets the time as a nicely formatted string
+        :relative:  if true will display the date relative to now, eg "2 hours ago"
+                    if false will display the time as a human readable string eg ""
+        :return: time as a string
+        """
+        diff = datetime.utcnow() - self.timestamp
+        if not relative:
+            dt = self.timestamp.strftime('%b %d, %Y at %X')
+            return dt
+        # relative time
+        if diff < timedelta(hours=1):
+            return str(int(diff.seconds / 60)) + " minutes ago"
+        if diff < timedelta(hours=24):
+            return str(int(diff.seconds / 3600)) + " hours ago"
+        else:
+            return str(int(diff.days)) + " days ago"
 
     def __init__(self, user, text, thread=None, title=None):
         """

@@ -1,15 +1,14 @@
 {% extends "base.html" %}
-
+{#todo make this actually display unseen posts#}
 {% block title %}
-    Home
+    Alerts
 {% endblock %}
 
 {% block content %}
     {{ super() }}
-    <h1>Welcome {{ current_user.username }}</h1>
+    <h1>Welcome back {{ current_user.username }}</h1>
     <br>
-    <h1>Feed</h1>
-
+    <h1>Unread Posts:</h1>
     {% for post in current_user.get_feed() %}
         <div class="well">
             <h3>{{ post.thread }}</h3>

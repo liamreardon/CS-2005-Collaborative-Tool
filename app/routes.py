@@ -185,6 +185,12 @@ def logout():
 def subscriptions():
     return render_template('subscriptions.html')
 
+
+@app.route('/alerts')
+@login_required
+def alerts():
+    return render_template('alerts.html', name=current_user.username)
+
 # region Profile
 
 @app.route('/user/<username>')
