@@ -142,6 +142,13 @@ def edit_thread(id):
         return redirect(url_for('view_threads', id=id))
     return render_template('edit_thread.html', id=id, form=form, thread=current_thread)
 
+@app.route('/view_topic/<string:topic_name>')
+def view_topic(topic_name):
+    topic = Topic.get(topic_name)
+    threads = topic.threads
+    return render_template('view_topic.html', threads=threads)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
