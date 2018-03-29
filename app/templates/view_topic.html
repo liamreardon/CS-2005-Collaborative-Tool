@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}
-Threads
+Topic
 {% endblock %}
 
 {% block content %}
-  <h1>Threads</h1>
+  <h1>Topic:</h1>
     <table class="table table-striped">
       <tr>
         <th>ID</th>
@@ -24,7 +24,7 @@ Threads
               <td>{{thread.posts[0].author}}</td>
             {% endif %}
             <td>{{ thread.posts[0].get_time() }}</td>
-          <td><a href="view_topic/{{thread.topic.name}}">{{thread.topic.name}}</a></td>
+          <td><a href="view_topic/{{thread.topic}}">{{thread.topic.name}}</a></td>
           </tr>
         {% endfor %}
 {% endblock %}

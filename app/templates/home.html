@@ -9,4 +9,16 @@
     <h1>Welcome {{ current_user.username }}</h1>
     <br>
     <h1>Feed</h1>
+
+    {% for post in current_user.get_feed() %}
+        <div class="well">
+            <h3>{{ post.thread }}</h3>
+            <h5>Posted by: {{ post.author }} {{ post.get_time() }}</h5>
+            {{ post.text }}
+            {% if post.author_id==current_user.id %}
+                <h3><a href="edit_post/{{ post.id }}" class="btn btn-default pullright">Edit</a></h3>
+            {% endif %}
+        </div>
+    {% endfor %}
+
 {% endblock %}

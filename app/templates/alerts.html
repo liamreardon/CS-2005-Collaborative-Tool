@@ -1,11 +1,14 @@
 {% extends "base.html" %}
-
+{#todo make this actually display unseen posts#}
 {% block title %}
-Threads
+    Alerts
 {% endblock %}
 
 {% block content %}
-  <h1>Threads</h1>
+    {{ super() }}
+    <h1>Welcome back {{ current_user.username }}</h1>
+    <br>
+    <h1>Threads with new posts:</h1>
     <table class="table table-striped">
       <tr>
         <th>ID</th>
@@ -14,7 +17,7 @@ Threads
         <th>Date</th>
         <th>Topics</th>
       </tr>
-        {% for thread in threads %}
+        {% for thread in current_user.get_unseen_threads() %}
         <tr>
           <td>{{thread.id}}</td>
           <td><a href="view_thread/{{thread.id}}">{{thread.name}}</a></td>
@@ -27,4 +30,5 @@ Threads
           <td><a href="view_topic/{{thread.topic.name}}">{{thread.topic.name}}</a></td>
           </tr>
         {% endfor %}
+
 {% endblock %}
