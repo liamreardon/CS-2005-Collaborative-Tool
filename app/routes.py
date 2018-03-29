@@ -166,24 +166,6 @@ def view_topic(topic_name):
     threads = topic.threads
     return render_template('view_topic.html', threads=threads)
 
-
-<<<<<<< HEAD
-=======
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = RegistrationForm(request.form)
-    if form.validate_on_submit():
-        # todo bool checks for existing user and email
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Thanks for registering!')
-        return redirect(url_for('login'))
-    return render_template('signup.html', form=form)
-
-
->>>>>>> a95f67e8657c401ef61d187450d774a382fba53e
 @app.route('/home')
 @login_required
 def home():
