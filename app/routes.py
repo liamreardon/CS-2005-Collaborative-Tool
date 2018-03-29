@@ -18,9 +18,17 @@ from app.models import *
 
 
 @app.route('/')
-@app.route('/index')
-def index():
-    return render_template("index.html", title="Example Title", text="Hello: Dude")
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user, remember=form.remember.data)
+                return redirect(url_for('home'))
+        return '<h1>Invalid username or password</h1>'
+    return render_template('login.html', form=form)
 
 
 @app.route('/testing')
@@ -62,7 +70,6 @@ def create_thread():
     """
     form = ThreadForm()
     if form.validate_on_submit():
-        print("Validating")
         new_thread = Thread()
         new_topic = Topic(name=form.topic.data)
         new_post = Post(title=form.thread.data,text=form.post.data,user=current_user)
@@ -185,7 +192,7 @@ def home():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/subscriptions')
