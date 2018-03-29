@@ -27,8 +27,19 @@ def login():
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect(url_for('home'))
-        return '<h1>Invalid username or password</h1>'
     return render_template('login.html', form=form)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegistrationForm(request.form)
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Thanks for registering!')
+        return redirect(url_for('login'))
+    return render_template('signup.html', form=form)
 
 
 @app.route('/testing')
@@ -150,19 +161,6 @@ def edit_thread(id):
     return render_template('edit_thread.html', id=id, form=form, thread=current_thread)
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = RegistrationForm(request.form)
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Thanks for registering!')
-        return redirect(url_for('login'))
-    return render_template('signup.html', form=form)
-
-
 @app.route('/home')
 @login_required
 def home():
@@ -226,7 +224,6 @@ def change_password():
 
     return render_template('change_password.html', title='Change Password',
                            form=form)
-
 
 
 # endregion
