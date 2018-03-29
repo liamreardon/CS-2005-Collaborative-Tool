@@ -16,9 +16,9 @@ from app.models import *
 
 @app.route('/')
 @app.route('/index')
-def index():
 
-    return render_template("index.html", title="Example Title", text="Hello: Dude")
+def index():
+    return render_template("index.html", title="Example Title", text="Hello")
 
 @app.route('/testing')
 def testing():
@@ -36,7 +36,8 @@ def testing():
 @app.route('/create_thread', methods=['GET', 'POST'])
 #@login_required()
 
-#def create_group():
+##def create_group():
+    
 
 def create_thread():
     form = ThreadForm()

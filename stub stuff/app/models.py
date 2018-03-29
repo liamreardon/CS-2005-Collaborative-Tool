@@ -12,7 +12,7 @@ from app import db
 from datetime import datetime
 from flask_login import UserMixin
 from sqlalchemy.ext.associationproxy import association_proxy)
-
+from Random import random
 groups_joined = db.Table('groups_joined', db.Column('user_id', db.Integer, db.ForeignKey('User.username')), db.Column('group_id', db.Integer, db.ForeignKey('Group.id')))
 
 # endregion
@@ -59,17 +59,27 @@ class User(UserMixin, db.Model):
         return "User " + self.username
 
 class Group(db.Model):
+    """
+    A class to store information about the discussion group
+
+    Args:
+        id (int):         Integer primary key
+        title (str):      title and topic of the discussion group
+        group_id (int):   randomly generated integer representing ID of the group
+        users (list: str): list of users currently included in the discussion group
+        
+    """
 
         __tablename__ = "Group"
         id = db.Column(db.Integer, primary_key=True)
         title = db.Column(db.String(128))
-        author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
         group_id = db.Column(db.Integer, db.ForeginKey('Group.id'))
         users = db.relationship('Users', backref='group')
 
         def __init__(self, title, author_id):
             self.title = title
             self.author_id = author_id
+            self.group_id = random.randint(1000000, 10000000)
             db.session.add(self)
             db.session.commit()
         
@@ -78,5 +88,8 @@ class Group(db.Model):
             db.session.add(self)
             db.session.commit()
 
-#another class for messages (?)
+        def edit_title(self, t):
+            self.title = t
+            db.session.add(self)
+            db.session.commit()
 
