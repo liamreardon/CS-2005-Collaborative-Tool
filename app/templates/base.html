@@ -1,4 +1,9 @@
 {% extends "bootstrap/base.html" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    </head>
 
 {% block title %}
     Home
@@ -6,12 +11,11 @@
 
 {% block navbar %}
     {# BRAND #}
-    <nav class="navbar navbar-inverse">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-            </button>
-            <a class="navbar-brand" href="#">Project Name</a>
+    <nav class="navbar navbar-default">
+        <div class="text-center">
+
+            <h1><a class="navbar-brand" href="{{ url_for('home') }}">Project Name</a></h1>
+            
         </div>
         {# LEFT ALIGNED #}
         <div id="navbar" class="collapse navbar-collapse">
@@ -57,3 +61,4 @@
 {% endblock %}
 </div>
 </div>
+</html>
