@@ -1,9 +1,9 @@
 {% extends "bootstrap/base.html" %}
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="static/css/main.css">
-    </head>
+<head>
+    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+</head>
 
 {% block title %}
     Home
@@ -15,7 +15,7 @@
         <div class="text-center">
 
             <h1><a class="navbar-brand" href="{{ url_for('home') }}">Project Name</a></h1>
-            
+
         </div>
         {# LEFT ALIGNED #}
         <div id="navbar" class="collapse navbar-collapse">
@@ -57,7 +57,7 @@
 
 {% block content %}
     <div class="container-fluid">
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="col-md-8 col-md-offset-2 main">
 {% endblock %}
 </div>
 </div>

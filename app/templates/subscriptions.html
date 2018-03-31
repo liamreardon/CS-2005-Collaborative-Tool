@@ -7,15 +7,33 @@
 {% block content %}
     {{ super() }}
     <h1>Your Subscriptions</h1>
-    <h2>Threads:</h2>
     {% if current_user.subs %}
-        {{ current_user.subs }}
+        <h2>Threads:</h2>
+        {% for thread in current_user.subs %}
+            <div class="well">
+                <h3>
+                    <a href="view_thread/{{ thread.id }}">{{ thread.name }}</a>
+                    <a href={{ url_for('unsub_thread',thread_id=thread.id,redir=request.path) }} class = "
+                        btn btn-warning btn-xs"
+                    role="button">-</a>
+                </h3>
+            </div>
+        {% endfor %}
     {% else %}
         You aren't subscribed to any threads.
     {% endif %}
     <h2>Topics:</h2>
     {% if current_user.topics %}
-        {{ current_user.topics }}
+        {% for topic in current_user.topics %}
+            <div class="well">
+                <h3><a href= {{ url_for('view_topic',topic_name=topic.name) }}>{{ topic.name }}</a>
+                    {#unsub button#}
+                    <a href={{ url_for('unsub_topic',topic_name=topic.name,redir="subscriptions") }} class = "
+                        btn btn-warning btn-xs"
+                    role="button">-</a>
+                </h3>
+            </div>
+        {% endfor %}
     {% else %}
         You aren't subscribed to any topics.
     {% endif %}

@@ -2,18 +2,33 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-View Thread
+    View Thread
 {% endblock %}
 
 {% block content %}
-    <h2>Thread: {{current_thread.name}}</h2>
+    {{ super() }}
+    <h2>
+        Thread: {{ current_thread.name }}
+        {% if current_thread not in current_user.subs %}
+            <a href={{ url_for('sub_thread',thread_id=current_thread.id, redir=request.path) }} class="btn btn-success
+               pull-right" role="button">Subscribe</a>
+        {% else %}
+            <a href={{ url_for('unsub_thread',thread_id=current_thread.id, redir=request.path) }} class="btn btn-warning
+               pull-right" role="button">Unsubscribe</a>
+        {% endif %}
+    </h2>
+    {% if current_thread.topic %}
+        <h3>Topic: <a
+                href= {{ url_for('view_topic',topic_name=current_thread.topic.name) }}>{{ current_thread.topic.name }}</a>
+        </h3>
+    {% endif %}
     {% for post in posts %}
         <div class="well">
-            <h3>Comment: {{post.text}}</h3>
-            <h3>Created by: {{post.author}}</h3>
+            <h3>Comment: {{ post.text }}</h3>
+            <h3>Created by: {{ post.author }}</h3>
             <h3>Date: {{ post.get_time() }}</h3>
             {% if post.author_id==current_user.id %}
-            <h3><a href="edit_post/{{post.id}}" class="btn btn-default pullright">Edit</a></h3>
+                <h3><a href="edit_post/{{ post.id }}" class="btn btn-default pullright">Edit</a></h3>
             {% endif %}
         </div>
     {% endfor %}
@@ -24,13 +39,13 @@ View Thread
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form> -->
 
-      <form class="" method="POST" action="">
+    <form class="" method="POST" action="">
         <h2 class=""></h2>
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.post) }}
         {{ form.submit() }}
         <!-- <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button> -->
-      </form>
+    </form>
     </div> <!-- /container -->
 {% endblock %}

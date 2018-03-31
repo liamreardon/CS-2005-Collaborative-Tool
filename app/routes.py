@@ -29,6 +29,7 @@ def login():
                 return redirect(url_for('home'))
     return render_template('login.html', form=form)
 
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegistrationForm(request.form)
@@ -73,7 +74,7 @@ def testing():
 
 
 @app.route('/create_thread', methods=['GET', 'POST'])
-#@login_required()
+# @login_required()
 def create_thread():
     """
     Create a new thread with a title and a new post
@@ -83,48 +84,51 @@ def create_thread():
     if form.validate_on_submit():
         new_thread = Thread()
         new_topic = Topic(name=form.topic.data)
-        new_post = Post(title=form.thread.data,text=form.post.data,user=current_user)
+        new_post = Post(title=form.thread.data, text=form.post.data, user=current_user)
         new_thread.add_first_post(new_post)
         new_thread.add_topic(new_topic)
         db.session.add(new_thread)
         db.session.commit()
-        #flash('Thread submitted.')
+        # flash('Thread submitted.')
         return redirect(url_for('view_threads'))
     return render_template('create_thread.html', form=form)
 
+
 @app.route('/view_threads', methods=['GET', 'POST'])
-#@login_required()
+# @login_required()
 def view_threads():
     """
     Insert all the threads within the database into
     a table and display the id, title, author, and
     datetime of each thread.
     """
-    threads = Thread.query.all()#topic.author.username
+    threads = Thread.query.all()  # topic.author.username
     return render_template('view_threads.html', threads=threads)
 
+
 @app.route('/view_thread/<string:id>', methods=['GET', 'POST'])
-#@login_required()
+# @login_required()
 def view_thread(id):
     """
     Display all the posts within a thread and include
     a form to create a new post within that thread.
     """
     posts = Post.query.filter_by(thread_id=id).all()
-    #posts = Thread.query.filter_by(id=id).first().posts
+    # posts = Thread.query.filter_by(id=id).first().posts
     current_thread = Thread.query.get(id)
 
     form = PostForm()
     if form.validate_on_submit():
-        new_post = Post(title=current_thread.name,text=form.post.data,user=current_user)
+        new_post = Post(title=current_thread.name, text=form.post.data, user=current_user)
         current_thread.add_post(new_post)
         db.session.commit()
-        #flash('Post submitted.')
-        return redirect(url_for('view_thread',id=id))
+        # flash('Post submitted.')
+        return redirect(url_for('view_thread', id=id))
     return render_template('view_thread.html', form=form, posts=posts, current_thread=current_thread)
 
+
 @app.route('/view_thread/edit_post/<string:id>', methods=['GET', 'POST'])
-#@login_required()
+# @login_required()
 def edit_post(id):
     """
     Identify a post created by the user and allow the user
@@ -136,19 +140,20 @@ def edit_post(id):
     if form.validate_on_submit():
         current_post.text = form.post.data
         db.session.commit()
-        #flash('Post editted.')
+        # flash('Post editted.')
         return redirect(url_for('view_thread', id=current_post.thread_id))
     return render_template('edit_post.html', id=id, form=form, post=current_post)
 
+
 @app.route('/edit_thread/<string:id>', methods=['GET', 'POST'])
-#@login_required()
+# @login_required()
 def edit_thread(id):
     """
     Identify a thread created by the user and allow the user 
     to edit that thread.
     """
     current_thread = Thread.query.get(id)
-    #current_topic = Topic.query.get(name=id)
+    # current_topic = Topic.query.get(name=id)
 
     form = ThreadForm(thread=current_thread.name, topic=current_thread.topic.name, post=current_thread.posts[0].text)
     if form.validate_on_submit():
@@ -156,15 +161,76 @@ def edit_thread(id):
         current_thread.topic.name = form.topic.data
         current_thread.posts[0].text = form.post.data
         db.session.commit()
-        #flash('Thread editted.')
+        # flash('Thread editted.')
         return redirect(url_for('view_threads', id=id))
     return render_template('edit_thread.html', id=id, form=form, thread=current_thread)
+
 
 @app.route('/view_topic/<string:topic_name>')
 def view_topic(topic_name):
     topic = Topic.get(topic_name)
     threads = topic.threads
     return render_template('view_topic.html', threads=threads)
+
+
+# region subscriptions
+
+@app.route('/subscriptions')
+@login_required
+def subscriptions():
+    return render_template('subscriptions.html')
+
+
+@app.route('/sub_topic/<string:topic_name>')
+@login_required
+def sub_topic(topic_name):
+    current_user.topics.append(Topic.get(topic_name))
+    db.session.commit()
+    redir = request.args.get('redir')
+    if redir is None:
+        redir = 'home'
+    return redirect(redir)
+
+
+@app.route('/sub_thread/<int:thread_id>')
+@login_required
+def sub_thread(thread_id):
+    thread = Thread.query.filter_by(id=thread_id).first_or_404()
+    if thread not in current_user.subs:
+        current_user.subs.append(thread)
+        db.session.commit()
+    redir = request.args.get('redir')
+    if redir is None:
+        redir = 'home'
+    return redirect(redir)
+
+
+@app.route('/unsub_topic/<string:topic_name>')
+@login_required
+def unsub_topic(topic_name):
+    current_user.topics.remove(Topic.get(topic_name))
+    db.session.commit()
+    redir = request.args.get('redir')
+    if redir is None:
+        redir = 'home'
+    return redirect(redir)
+
+
+@app.route('/unsub_thread/<int:thread_id>')
+@login_required
+def unsub_thread(thread_id):
+    thread = Thread.query.filter_by(id=thread_id).first_or_404()
+    if thread in current_user.subs:
+        current_user.subs.remove(thread)
+        db.session.commit()
+    redir = request.args.get('redir')
+    if redir is None:
+        redir = 'home'
+    return redirect(redir)
+
+
+# endregion
+
 
 @app.route('/home')
 @login_required
@@ -179,16 +245,11 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/subscriptions')
-@login_required
-def subscriptions():
-    return render_template('subscriptions.html')
-
-
 @app.route('/alerts')
 @login_required
 def alerts():
     return render_template('alerts.html', name=current_user.username)
+
 
 # region Profile
 
@@ -220,6 +281,7 @@ def edit_profile():
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
 
+
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     form = ChangePasswordForm(request.form)
@@ -235,6 +297,5 @@ def change_password():
 
     return render_template('change_password.html', title='Change Password',
                            form=form)
-
 
 # endregion
