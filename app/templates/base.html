@@ -1,64 +1,71 @@
 {% extends "bootstrap/base.html" %}
 <!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="static/css/main.css">
-</head>
+<div>
+    {% block head %}
+        {{ super() }}
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    {% endblock %}
 
-{% block title %}
-    Home
-{% endblock %}
+    {% block title %}
+        Home
+    {% endblock %}
 
-{% block navbar %}
-    {# BRAND #}
-    <nav class="navbar navbar-default">
-        <div class="text-center">
+    {% block navbar %}
+        {# BRAND #}
+        <nav class="navbar navbar-default">
+            <div class="text-center">
 
-            <h1><a class="navbar-brand" href="{{ url_for('home') }}">Project Name</a></h1>
+                <h1><a class="navbar-brand" href="{{ url_for('home') }}">Project Name</a></h1>
 
-        </div>
-        {# LEFT ALIGNED #}
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('home') }}">Home</a></li>
+            </div>
+            {# LEFT ALIGNED #}
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('create_thread') }}">Create Thread</a></li>
+                        <li><a href="{{ url_for('view_threads') }}">View Threads</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('signup') }}">Signup</a></li>
+                    {% endif %}
+                </ul>
+                {# RIGHT ALIGNED #}
                 {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('create_thread') }}">Create Thread</a></li>
-                    <li><a href="{{ url_for('view_threads') }}">View Threads</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('signup') }}">Signup</a></li>
+                    <div class="navbar-collapse collapse navbar-right">
+                        <ul class="nav navbar-nav nav-item dropdown">
+                            <li><a href="{{ url_for('alerts') }}">Alerts</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ current_user.username }}
+                                </a>
+                                <ul class="dropdown-menu nav" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item"
+                                           href="{{ url_for('user', username = current_user.username ) }}">Profile</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{{ url_for('subscriptions') }}">Subscriptions</a>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 {% endif %}
-            </ul>
-            {# RIGHT ALIGNED #}
-            {% if current_user.is_authenticated %}
-                <div class="navbar-collapse collapse navbar-right">
-                    <ul class="nav navbar-nav nav-item dropdown">
-                        <li><a href="{{ url_for('alerts') }}">Alerts</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ current_user.username }}
-                            </a>
-                            <ul class="dropdown-menu nav" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item"
-                                       href="{{ url_for('user', username = current_user.username ) }}">Profile</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('subscriptions') }}">Subscriptions</a>
-                                </li>
-                                <li role="separator" class="divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            {% endif %}
-        </div>
-    </nav>
-{% endblock %}
+            </div>
+        </nav>
+    {% endblock %}
 
-{% block content %}
-    <div class="container-fluid">
-    <div class="col-md-8 col-md-offset-2 main">
-{% endblock %}
+
+
+    {% block content %}
+        <div class="main">
+        <div class="container-fluid">
+        <div class="col-md-8 col-md-offset-2 center">
+    {% endblock %}
+    </div>
+    </div>
+    </div>
 </div>
-</div>
-</html>
+    </html>

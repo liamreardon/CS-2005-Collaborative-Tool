@@ -6,7 +6,7 @@ New Thread
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    {{ super() }}
       <form class="form-create_thread" method="POST" action="">
         <h2 class="form-create_thread-heading">Create a new thread</h2>
         {{ form.hidden_tag() }}
@@ -15,5 +15,4 @@ New Thread
         {{ wtf.form_field(form.post) }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form>
-    </div> <!-- /container -->
 {% endblock %}
