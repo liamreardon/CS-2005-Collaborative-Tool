@@ -39,15 +39,16 @@ body {
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: 100% !important;
-    position: relative;
+    background-attachment: fixed !important;
 }
 
 .center {
     background: rgba(255, 255, 255, 0.95);
-    height: 100%;
+    min-height: 100%;
     padding-top: 3%;
     padding-left: 5%;
     padding-right: 5%;
+    padding-bottom: 5%;
     border-bottom-left-radius: 25px ;
     border-bottom-right-radius: 25px ;
 }

@@ -24,9 +24,10 @@
     {% endif %}
     {% for post in posts %}
         <div class="well">
-            <h4>Comment: {{ post.text }}</h4>
-            <h4>Created by: {{ post.author }}</h4>
-            <h4>Date: {{ post.get_time() }}</h4>
+            <h4>{{ post.author }}</h4>
+            <em>{{ post.get_time() }}</em>
+            <hr>
+            {{ post.text }}
             {% if post.author_id==current_user.id %}
                 <h3><a href="edit_post/{{ post.id }}" class="btn btn-default pullright">Edit</a></h3>
             {% endif %}
