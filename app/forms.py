@@ -22,8 +22,8 @@ class LoginForm(FlaskForm):
         
         Username and Password fields have InputRequired and Length constraints.
     """
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
+    username = StringField('', validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+    password = PasswordField('', validators=[InputRequired(), Length(min=6, max=80)], render_kw={"placeholder": "Password"})
     remember = BooleanField('Remember Me')
 
 
@@ -42,13 +42,13 @@ class RegistrationForm(FlaskForm):
         contain data (cannt be blank) and must equal 'confirm' field, or else it will throw an error.
 
     """
-    username = StringField('Username', [validators.Length(min=4, max=25)])
-    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)])
-    password = PasswordField('New Password', [
+    username = StringField('', [validators.Length(min=4, max=25)], render_kw={"placeholder": "Username"})
+    email = StringField('', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)], render_kw={"placeholder": "Email"})
+    password = PasswordField('', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
+    ], render_kw={"placeholder": "Password"})
+    confirm = PasswordField('', render_kw={"placeholder": "Repeat Password"})
 
 class ThreadForm(FlaskForm):
     """
