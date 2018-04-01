@@ -15,30 +15,36 @@
             <th>Date</th>
             <th>Topics</th>
         </tr>
-        {% for thread in threads %}
-            <tr>
-                <td>{{ thread.id }}</td>
-                <td><a href="view_thread/{{ thread.id }}">{{ thread.name }}</a></td>
-                {% if thread.posts[0].author_id==current_user.id %}
-                    <td><a href="edit_thread/{{ thread.id }}" class="btn btn-default">Edit</a></td>
-                {% else %}
-                    <td>{{ thread.posts[0].author }}</td>
-                {% endif %}
-                <td>{{ thread.posts[0].get_time() }}</td>
-                <td>
-                    <a href= {{ url_for('view_topic',topic_name=thread.topic.name) }}>{{ thread.topic.name }}</a>
-                    {#subscribe or remove topic buttons#}
-                    {% if thread.topic not in current_user.topics %}
-                        <a href={{ url_for('sub_topic',topic_name=thread.topic.name,redir="view_threads") }} class = "
-                        btn btn-success btn-xs"
-                        role="button">+</a>
+        {% if threads %}
+            {% for thread in threads %}
+                <tr>
+                    <td>{{ thread.id }}</td>
+                    <td><a href="view_thread/{{ thread.id }}">{{ thread.name }}</a></td>
+                    {% if thread.posts[0].author_id==current_user.id %}
+                        <td><a href="edit_thread/{{ thread.id }}" class="btn btn-default">Edit</a></td>
                     {% else %}
-                        <a href={{ url_for('unsub_topic',topic_name=thread.topic.name,redir="view_threads") }} class = "
-                        btn btn-warning btn-xs"
-                        role="button">-</a>
+                        <td>{{ thread.posts[0].author }}</td>
                     {% endif %}
+                    <td>{{ thread.posts[0].get_time() }}</td>
+                    <td>
+                        <a href= {{ url_for('view_topic',topic_name=thread.topic.name) }}>{{ thread.topic.name }}</a>
+                        {#subscribe or remove topic buttons#}
+                        {% if thread.topic not in current_user.topics %}
+                            <a href={{ url_for('sub_topic',topic_name=thread.topic.name,redir="view_threads") }} class =
+                            "
+                        btn btn-success btn-xs"
+                            role="button">+</a>
+                        {% else %}
+                            <a href={{ url_for('unsub_topic',topic_name=thread.topic.name,redir="view_threads") }} class
+                            = "
+                        btn btn-warning btn-xs"
+                            role="button">-</a>
+                        {% endif %}
 
-                </td>
-            </tr>
-        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            There are no posts to display!
+        {% endif %}
 {% endblock %}

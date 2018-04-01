@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block title %}
+    Create a Group
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <h1>Create a group</h1>
+    <h4>Create a new group for private discussion</h4>
+    <hr>
+    <form class="form-create_thread" method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.title) }}
+        {{ wtf.form_field(form.descr) }}
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+
+{% endblock %}

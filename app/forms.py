@@ -22,8 +22,10 @@ class LoginForm(FlaskForm):
         
         Username and Password fields have InputRequired and Length constraints.
     """
-    username = StringField('', validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-    password = PasswordField('', validators=[InputRequired(), Length(min=6, max=80)], render_kw={"placeholder": "Password"})
+    username = StringField('', validators=[InputRequired(), Length(min=4, max=20)],
+                           render_kw={"placeholder": "Username"})
+    password = PasswordField('', validators=[InputRequired(), Length(min=6, max=80)],
+                             render_kw={"placeholder": "Password"})
     remember = BooleanField('Remember Me')
 
 
@@ -39,16 +41,18 @@ class RegistrationForm(FlaskForm):
         Username and Password fields both have InputRequired and length constraints, and the email field has an email constraint
         which must be in format 'email@test.com'.
         The 'password' field has DataRequired() and EqualTo() validators, which means that the this field must
-        contain data (cannt be blank) and must equal 'confirm' field, or else it will throw an error.
+        contain data (cannot be blank) and must equal 'confirm' field, or else it will throw an error.
 
     """
     username = StringField('', [validators.Length(min=4, max=25)], render_kw={"placeholder": "Username"})
-    email = StringField('', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)], render_kw={"placeholder": "Email"})
+    email = StringField('', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)],
+                        render_kw={"placeholder": "Email"})
     password = PasswordField('', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ], render_kw={"placeholder": "Password"})
     confirm = PasswordField('', render_kw={"placeholder": "Repeat Password"})
+
 
 class ThreadForm(FlaskForm):
     """
@@ -63,6 +67,7 @@ class ThreadForm(FlaskForm):
     topic = StringField('Topic:', validators=[InputRequired(), Length(min=1, max=128)])
     post = TextAreaField('Body:', validators=[InputRequired(), Length(min=1, max=1000)])
 
+
 class PostForm(FlaskForm):
     """
     PostForm is a class which creates the forms and variables for creating a post.
@@ -75,10 +80,12 @@ class PostForm(FlaskForm):
     post = TextAreaField('Add a post:', validators=[InputRequired(), Length(min=1, max=1000)])
     submit = SubmitField('Submit')
 
+
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
     submit = SubmitField('Submit')
+
 
 class ChangePasswordForm(FlaskForm):
     """
@@ -98,4 +105,16 @@ class ChangePasswordForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-    
+class CreateGroupForm(FlaskForm):
+    """
+    TODO: this
+    """
+    title = StringField('', [validators.Length(min=4, max=64)], render_kw={'placeholder': 'Title'})
+    descr = TextAreaField('', validators=[InputRequired(), Length(min=1, max=1000)],
+                          render_kw={'placeholder': 'Group Description'})
+
+class AddUserToGroupForm(FlaskForm):
+    """
+    todo: this
+    """
+    username = StringField('', [validators.Length(min=4, max=64)], render_kw={'placeholder': 'Username'})

@@ -373,6 +373,7 @@ class Group(db.Model):
     __tablename__ = 'Group'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
+    descr = db.Column(db.Text())
     # relationships
     threads = db.relationship("Thread", back_populates='group')
     users = db.relationship(
@@ -380,8 +381,28 @@ class Group(db.Model):
         secondary=group_user_association,
         back_populates="groups")
 
-    def __init__(self):
+    def __init__(self, name, descr, user=None):
         db.session.add(self)
+        self.name = name
+        self.descr = descr
+        if user is not None:
+            self.add_user(user)
         db.session.commit()
+
+    def add_user(self, usr):
+        """
+        adds a single user to this group
+        """
+        self.users.append(usr)
+
+    def add_users(self,users):
+        """
+        adds a list of users to the group
+        """
+        for usr in users:
+            self.add_user(usr)
+
+    def __repr__(self):
+        return "Group " + self.name
 
 

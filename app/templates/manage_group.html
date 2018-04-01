@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+    GROUPS
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    {% if status == 'bad_user' %}
+        <h1 style="color: RED">  ERROR: USERNAME NOT FOUND</h1>
+    {% endif %}
+    <h1>Manage {{ group.name }}</h1>
+    <hr>
+    <h3>{{ group.descr }}</h3>
+    <hr>
+    <h3>Users: </h3>
+    {% for user in group.users %}
+        <p>{{ user }}</p>
+    {% endfor %}
+    <hr>
+    Invite users:
+    <form class="form-create_thread" method="POST" action="">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.username) }}
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Submit Changes</button>
+    </form>
+
+
+{% endblock %}
