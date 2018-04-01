@@ -72,6 +72,12 @@ class TopicSubscriptions(db.Model):
         return "TopicSubscription association for " + str(self.user.username) + " and " + str(self.topic.name)
 
 
+group_user_association = db.Table('group_user', db.metadata,
+                                  db.Column('user_id', db.Integer, db.ForeignKey('User.id')),
+                                  db.Column('group_id', db.Integer, db.ForeignKey('Group.id'))
+                                  )
+
+
 # endregion
 
 class User(UserMixin, db.Model):
@@ -98,6 +104,10 @@ class User(UserMixin, db.Model):
     subs = association_proxy('sub_id', 'thread', creator=lambda t: ThreadSubscriptions(thread=t))
     topic_id = db.relationship('TopicSubscriptions', back_populates='user')
     topics = association_proxy('topic_id', 'topic', creator=lambda t: TopicSubscriptions(topic=t))
+    groups = db.relationship(
+        "Group",
+        secondary=group_user_association,
+        back_populates="users")
 
     def __init__(self, username, password, email, **kwargs):
         """
@@ -252,6 +262,8 @@ class Thread(db.Model):
     topic = db.relationship('Topic', back_populates='threads')
     subbed_id = db.relationship('ThreadSubscriptions', back_populates='thread')
     subbed = association_proxy('subbed_id', 'user', creator=lambda u: ThreadSubscriptions(user=u))
+    group_id = db.Column(db.Integer, db.ForeignKey('Group.id'))
+    group = db.relationship('Group', back_populates='threads')
 
     def __init__(self, first_post=None, topic=None):
         """
@@ -299,6 +311,17 @@ class Thread(db.Model):
     def __repr__(self):
         return "Thread " + str(self.name)
 
+    def is_visible_by(self, usr):
+        """
+        Returns true if this post is public, or if the user is a member of the group
+        """
+        if self.group is None:
+            return True
+        if usr not in self.group.users:
+            return False
+        return True
+
+
 
 class Topic(db.Model):
     """
@@ -344,3 +367,21 @@ class Topic(db.Model):
 
     def __repr__(self):
         return "Topic " + self.name
+
+
+class Group(db.Model):
+    __tablename__ = 'Group'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+    # relationships
+    threads = db.relationship("Thread", back_populates='group')
+    users = db.relationship(
+        "User",
+        secondary=group_user_association,
+        back_populates="groups")
+
+    def __init__(self):
+        db.session.add(self)
+        db.session.commit()
+
+
