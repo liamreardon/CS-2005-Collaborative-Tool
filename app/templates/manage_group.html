@@ -8,9 +8,10 @@
 {% block content %}
     {{ super() }}
     {% if status == 'bad_user' %}
-        <h1 style="color: RED">  ERROR: USERNAME NOT FOUND</h1>
+        <h1 style="color: RED"> ERROR: USERNAME NOT FOUND</h1>
     {% endif %}
     <h1>Manage {{ group.name }}</h1>
+    <a href={{ url_for('groups') }} class="btn btn-default btn-xs" role="button">Back to Groups</a>
     <hr>
     <h3>{{ group.descr }}</h3>
     <hr>
@@ -21,9 +22,9 @@
     <hr>
     Invite users:
     <form class="form-create_thread" method="POST" action="">
-    {{ form.hidden_tag() }}
-    {{ wtf.form_field(form.username) }}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Submit Changes</button>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.username) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit Changes</button>
     </form>
 
 

@@ -118,3 +118,11 @@ class AddUserToGroupForm(FlaskForm):
     todo: this
     """
     username = StringField('', [validators.Length(min=4, max=64)], render_kw={'placeholder': 'Username'})
+
+class AddThreadToGroup(FlaskForm):
+    """
+    Adds a new thread to a user group
+    """
+    title = StringField('', validators=[InputRequired(), Length(min=1, max=128)], render_kw={"placeholder": "Title"})
+    topic = StringField('', validators=[InputRequired(), Length(min=1, max=128)], render_kw={"placeholder": "Topic"})
+    post = TextAreaField('', validators=[InputRequired(), Length(min=1, max=1000)], render_kw={"placeholder": "Text"})

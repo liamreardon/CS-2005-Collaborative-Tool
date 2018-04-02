@@ -34,6 +34,24 @@ Navbar styling
     }
 }
 
+.dropdown .dropdown-menu {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+
+    max-height: 0;
+    display: block;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.dropdown.open .dropdown-menu {
+    max-height: 300px;
+    opacity: 1;
+}
+
 body {
     background: url('../../static/images/bg-04.jpg') !important;
     background-repeat: no-repeat !important;
@@ -49,12 +67,34 @@ body {
     padding-left: 5%;
     padding-right: 5%;
     padding-bottom: 5%;
-    border-bottom-left-radius: 25px ;
-    border-bottom-right-radius: 25px ;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+
 }
 
 .container-fluid {
     height: 90vh;
+}
+
+
+/* make keyframes that tell the start state and the end state of our object */
+@-webkit-keyframes fadeIn { from { opacity:0.5; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0.5; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0.5; } to { opacity:1; } }
+
+.fade-in {
+  opacity:0;  /* make things invisible upon start */
+  -webkit-animation:fadeIn ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+  -moz-animation:fadeIn ease-in 1;
+  animation:fadeIn ease-in 1;
+
+  -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
+
+  -webkit-animation-duration:0.25s;
+  -moz-animation-duration:0.25s;
+  animation-duration:0.25s;
 }
 
 /*//////////////////////////////////////////////////////////////////
@@ -97,8 +137,8 @@ body, html {
 /*---------------------------------------------*/
 a {
     font-family: Poppins-Regular;
-    font-size: 14px;
-    line-height: 1.7;
+    /*font-size: 14px;*/
+    /*line-height: 1.7;*/
     color: #666666;
     margin: 0px;
     transition: all 0.4s;
@@ -113,7 +153,7 @@ a:focus {
 
 a:hover {
     text-decoration: none;
-    color: #fff;
+    color: #7579ff;
 }
 
 /*---------------------------------------------*/

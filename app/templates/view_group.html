@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
 
 {% block title %}
     Threads
@@ -7,19 +9,19 @@
 {% block content %}
     {{ super() }}
     <h1>Threads</h1>
-    <h4>Public posts made by fellow students</h4>
-    <br> <br>
+    <p><a href={{ url_for('groups') }} class="btn btn-success btn-xs" role="button">Back to Groups</a></p>
+    <br>
     <table class="table table-striped">
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Date</th>
-            <th>Topics</th>
-        </tr>
-        {% if threads %}
-            {% for thread in threads %}
+        {% if group.threads %}
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Date</th>
+                <th>Topics</th>
+            </tr>
+            {% for thread in group.threads %}
                 <tr>
-                    <td><h3><a href="view_thread/{{ thread.id }}">{{ thread.name }}</a></h3></td>
+                    <td><a href="/view_thread/{{ thread.id }}">{{ thread.name }}</a></td>
                     {% if thread.posts[0].author_id==current_user.id %}
                         <td><a href="edit_thread/{{ thread.id }}" class="btn btn-default">Edit</a></td>
                     {% else %}
@@ -44,7 +46,18 @@
                     </td>
                 </tr>
             {% endfor %}
+            </table>
         {% else %}
-            There are no posts to display!
+            There are no posts in this group! Why not start one?
         {% endif %}
+    <hr>
+    <form method="POST" action="">
+        <h3>Start a New Thread</h3>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.title) }}
+        {{ wtf.form_field(form.topic) }}
+        {{ wtf.form_field(form.post) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+    </form>
+
 {% endblock %}

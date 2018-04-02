@@ -6,14 +6,19 @@
 
 {% block content %}
     {{ super() }}
-    <h1>Welcome {{ current_user.username }}</h1>
+    <h1>Welcome back {{ current_user.username }}</h1>
+    <p>Check out new threads, or post your own from the navbar above.
+    <p>Or why not modify your profile or create a private group, by clicking your name in the top right?
     <br>
-    <h1>Feed</h1>
-
+    <hr>
+    <h1>Your Feed</h1>
+    <h4>The latest posts from threads and topics you follow </h4>
+    <br>
     {% for post in current_user.get_feed() %}
         <div class="well">
-            <h3>{{ post.thread }}</h3>
-            <h5>Posted by: {{ post.author }} {{ post.get_time() }}</h5>
+            <h4>{{ post.author }}</h4>
+            <em>{{ post.title }} - {{ post.get_time() }}</em>
+            <hr>
             {{ post.text }}
             {% if post.author_id==current_user.id %}
                 <h3><a href="edit_post/{{ post.id }}" class="btn btn-default pullright">Edit</a></h3>

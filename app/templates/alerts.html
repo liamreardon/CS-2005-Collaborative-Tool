@@ -6,8 +6,11 @@
 
 {% block content %}
     {{ super() }}
-    <h1>Welcome back {{ current_user.username }}</h1>
+    <h1>New posts for {{ current_user.username }}</h1>
+    <em>Unread posts in topics and threads you follow</em>
+    <hr>
     <br>
+    {% if current_user.get_unseen_threads() %}
     <h1>Threads with new posts:</h1>
     <table class="table table-striped">
       <tr>
@@ -30,5 +33,8 @@
           <td><a href="view_topic/{{thread.topic.name}}">{{thread.topic.name}}</a></td>
           </tr>
         {% endfor %}
+        {% else %}
+        <h3> You have no new posts to view </h3>
+    {% endif %}
 
 {% endblock %}

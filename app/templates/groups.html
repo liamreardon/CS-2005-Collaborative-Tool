@@ -8,15 +8,23 @@
     {{ super() }}
     <h1>GROUPS</h1>
     <h4>View and manage private discussion groups</h4>
-    <a href={{ url_for('create_group') }} class="btn btn-success" role="button"> Create a new Group </a>
     <hr>
     {% for group in groups %}
         <div class="well">
-        <h3><a href = {{ url_for('manage_group', id=group.id) }}> {{ group.name }}</a>
-        <a href={{ url_for('groups', rem=group.id) }} class="btn btn-warning pull-right" role="button">Leave</a>
-        <a href={{ url_for('manage_group', id=group.id) }} class="btn btn-success pull-right" role="button">Manage</a>
-        </h3>
+            <h3><a href= {{ url_for('view_group', id=group.id) }}> {{ group.name }}</a>
+                <div class="btn-toolbar pull-right">
+
+                    <a href={{ url_for('manage_group', id=group.id) }} class="btn btn-default"
+                       role="button">Manage</a>
+
+                    <a href={{ url_for('groups', rem=group.id) }} class="btn btn-default"
+                       role="button">Leave</a>
+                </div>
+            </h3>
+            <br>
+        <em>{{ group.descr }}</em>
         </div>
     {% endfor %}
 
+    <a href={{ url_for('create_group') }} class="btn btn-success" role="button"> Create a new Group </a>
 {% endblock %}

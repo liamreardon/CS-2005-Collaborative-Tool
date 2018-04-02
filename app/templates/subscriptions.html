@@ -6,36 +6,42 @@
 
 {% block content %}
     {{ super() }}
-    <h1>Your Subscriptions</h1>
+    <h1>Subscriptions</h1>
+    <h4>All the topics and threads you've subscribed to</h4>
+    <hr>
     {% if current_user.subs %}
-        <h2>Threads:</h2>
+        <h3>Threads:</h3>
         {% for thread in current_user.subs %}
             <div class="well">
-                <h3>
+                <h4>
                     <a href="view_thread/{{ thread.id }}">{{ thread.name }}</a>
                     <a href={{ url_for('unsub_thread',thread_id=thread.id,redir=request.path) }} class = "
                         btn btn-warning btn-xs"
                     role="button">-</a>
-                </h3>
+                </h4>
             </div>
         {% endfor %}
     {% else %}
-        You aren't subscribed to any threads.
+        <h4>
+        You aren't subscribed to any threads.<a href={{ url_for('view_threads') }}> Click here </a> to find
+        some threads to follow
+        </h4>
     {% endif %}
-    <h2>Topics:</h2>
-    {% if current_user.topics %}
-        {% for topic in current_user.topics %}
-            <div class="well">
-                <h3><a href= {{ url_for('view_topic',topic_name=topic.name) }}>{{ topic.name }}</a>
-                    {#unsub button#}
-                    <a href={{ url_for('unsub_topic',topic_name=topic.name,redir="subscriptions") }} class = "
+<hr>
+<h3>Topics:</h3>
+{% if current_user.topics %}
+    {% for topic in current_user.topics %}
+        <div class="well">
+            <h4><a href= {{ url_for('view_topic',topic_name=topic.name) }}>{{ topic.name }}</a>
+                {#unsub button#}
+                <a href={{ url_for('unsub_topic',topic_name=topic.name,redir="subscriptions") }} class = "
                         btn btn-warning btn-xs"
-                    role="button">-</a>
-                </h3>
-            </div>
-        {% endfor %}
-    {% else %}
-        You aren't subscribed to any topics.
-    {% endif %}
+                role="button">-</a>
+            </h4>
+        </div>
+    {% endfor %}
+{% else %}
+    You aren't subscribed to any topics.
+{% endif %}
 
 {% endblock %}

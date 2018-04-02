@@ -73,6 +73,7 @@ def testing():
     return render_template("unit_testing.html", title="Example Title", posts=Post.query.all(), topics=Topic.query.all())
 
 
+# region Public Threads and Topics
 @app.route('/create_thread', methods=['GET', 'POST'])
 # @login_required()
 def create_thread():
@@ -102,7 +103,7 @@ def view_threads():
     a table and display the id, title, author, and
     datetime of each thread.
     """
-    threads = Thread.query.all()  # topic.author.username
+    threads = Thread.query.filter_by(group = None).all()  # topic.author.username
     return render_template('view_threads.html', threads=threads)
 
 
@@ -172,6 +173,8 @@ def view_topic(topic_name):
     threads = topic.threads
     return render_template('view_topic.html', threads=threads)
 
+
+# endregion
 
 # region subscriptions
 
@@ -253,8 +256,9 @@ def create_group():
         descr = form.descr.data
         g = Group(name, descr, user=current_user)
         id = g.id
-        return redirect(url_for('manage_group',id=id))
+        return redirect(url_for('manage_group', id=id))
     return render_template('create_group.html', form=form)
+
 
 @app.route('/manage_group', methods=['GET', 'POST'])
 @login_required
@@ -266,17 +270,39 @@ def manage_group():
     if form.validate_on_submit():
         print("Form Validated")
         username = form.username.data
-        user = User.query.filter_by(username = username).first()
+        user = User.query.filter_by(username=username).first()
         if user is None:
             print("Redirecting with bad status")
             # redirect(url_for('manage_group', id=group_id, status="bad_user"))
-            return render_template('manage_group.html', group=group, form=form,status="bad_user")
+            return render_template('manage_group.html', group=group, form=form, status="bad_user")
         else:
             group.users.append(user)
             db.session.commit()
             redirect(url_for('manage_group', id=group_id))
-
     return render_template('manage_group.html', group=group, form=form)
+
+
+@app.route('/view_group/<string:id>', methods=['GET', 'POST'])
+@login_required
+def view_group(id):
+    group = Group.query.filter_by(id=id).first()
+    form = AddThreadToGroup()
+    #todo: validate if user is member of the group
+    #todo add form for posting
+    if form.validate_on_submit():
+        new_thread = Thread()
+        new_topic = Topic.get(form.topic.data)
+        new_post = Post(title=form.title.data, text=form.post.data, user=current_user)
+        new_thread.add_first_post(new_post)
+        new_thread.add_topic(new_topic)
+        group.threads.append(new_thread)
+        db.session.add(new_thread)
+        db.session.commit()
+        # flash('Thread submitted.')
+        # return "well done"
+        # return render_template('view_group.html', group=group, form=form)
+    return render_template('view_group.html', group=group, form=form)
+
 
 # endregion
 

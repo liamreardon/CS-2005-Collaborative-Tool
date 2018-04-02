@@ -14,10 +14,12 @@
     <hr>
     <h2>Posts:</h2>
     {% for post in user.posts %}
-        <em>In thread: {{ post.thread.name }}</em>
+        <div class="well">
+        <h5>{{ post.thread.name }} - {{ post.get_time() }}</h5>
         <p>
-            {{ post.author.username }} says: <b>{{ post.text }}</b>
+            <em>{{ post.text }}</em>
         </p>
+        </div>
     {% endfor %}
     
 {% endblock %}

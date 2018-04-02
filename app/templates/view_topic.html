@@ -7,9 +7,9 @@
 {% block content %}
     {{ super() }}
     <h1>Topic:</h1>
+    <br>
     <table class="table table-striped">
         <tr>
-            <th>ID</th>
             <th>Title</th>
             <th>Author</th>
             <th>Date</th>
@@ -17,8 +17,7 @@
         </tr>
         {% for thread in threads %}
             <tr>
-                <td>{{ thread.id }}</td>
-                <td><a href="view_thread/{{ thread.id }}">{{ thread.name }}</a></td>
+                <td><h3><a href="/view_thread/{{ thread.id }}">{{ thread.name }}</a></h3></td>
                 {% if thread.posts[0].author_id==current_user.id %}
                     <td><a href="edit_thread/{{ thread.id }}" class="btn btn-default">Edit</a></td>
                 {% else %}
