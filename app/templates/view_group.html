@@ -3,13 +3,14 @@
 
 
 {% block title %}
-    Threads
+    Threads for {{ group.name }}
 {% endblock %}
 
 {% block content %}
     {{ super() }}
-    <h1>Threads</h1>
-    <p><a href={{ url_for('groups') }} class="btn btn-success btn-xs" role="button">Back to Groups</a></p>
+    <p><a href={{ url_for('groups') }} class="btn btn-default pull-right btn-sm" role="button">Back to Groups</a></p>
+    <h1>Threads for {{ group.name }}</h1>
+    <h4>These threads are only visible to members of the discussion group</h4>
     <br>
     <table class="table table-striped">
         {% if group.threads %}
@@ -23,7 +24,7 @@
                 <tr>
                     <td><a href="/view_thread/{{ thread.id }}">{{ thread.name }}</a></td>
                     {% if thread.posts[0].author_id==current_user.id %}
-                        <td><a href="edit_thread/{{ thread.id }}" class="btn btn-default">Edit</a></td>
+                        <td>You <a href="edit_thread/{{ thread.id }}" class="btn btn-default btn-xs">Edit</a></td>
                     {% else %}
                         <td>{{ thread.posts[0].author }}</td>
                     {% endif %}
@@ -32,12 +33,12 @@
                         <a href= {{ url_for('view_topic',topic_name=thread.topic.name) }}>{{ thread.topic.name }}</a>
                         {#subscribe or remove topic buttons#}
                         {% if thread.topic not in current_user.topics %}
-                            <a href={{ url_for('sub_topic',topic_name=thread.topic.name,redir="view_threads") }} class =
+                            <a href={{ url_for('sub_topic',topic_name=thread.topic.name,redir=request.path) }} class =
                             "
                         btn btn-success btn-xs"
                             role="button">+</a>
                         {% else %}
-                            <a href={{ url_for('unsub_topic',topic_name=thread.topic.name,redir="view_threads") }} class
+                            <a href={{ url_for('unsub_topic',topic_name=thread.topic.name,redir=request.path) }} class
                             = "
                         btn btn-warning btn-xs"
                             role="button">-</a>
