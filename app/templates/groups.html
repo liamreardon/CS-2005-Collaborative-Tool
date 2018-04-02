@@ -12,17 +12,16 @@
     {% for group in groups %}
         <div class="well">
             <h3><a href= {{ url_for('view_group', id=group.id) }}> {{ group.name }}</a>
+                <em style="font-size: small">({{ group.threads|length }} threads)</em>
                 <div class="btn-toolbar pull-right">
-
                     <a href={{ url_for('manage_group', id=group.id) }} class="btn btn-default"
-                       role="button">Manage</a>
-
+                    role="button">Manage</a>
                     <a href={{ url_for('groups', rem=group.id) }} class="btn btn-default"
-                       role="button">Leave</a>
+                    role="button">Leave</a>
                 </div>
             </h3>
             <br>
-        <em>{{ group.descr }}</em>
+            <em>{{ group.descr }}</em>
         </div>
     {% endfor %}
 

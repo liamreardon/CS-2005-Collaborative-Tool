@@ -23,25 +23,28 @@
         {% endfor %}
     {% else %}
         <h4>
-        You aren't subscribed to any threads.<a href={{ url_for('view_threads') }}> Click here </a> to find
+            You aren't subscribed to any threads.</h4>
+        <a href={{ url_for('view_threads') }}> Click here </a> to find
         some threads to follow
-        </h4>
     {% endif %}
-<hr>
-<h3>Topics:</h3>
-{% if current_user.topics %}
-    {% for topic in current_user.topics %}
-        <div class="well">
-            <h4><a href= {{ url_for('view_topic',topic_name=topic.name) }}>{{ topic.name }}</a>
-                {#unsub button#}
-                <a href={{ url_for('unsub_topic',topic_name=topic.name,redir="subscriptions") }} class = "
+    <hr>
+    {% if current_user.topics %}
+    <h3>Topics:</h3>
+        {% for topic in current_user.topics %}
+            <div class="well">
+                <h4><a href= {{ url_for('view_topic',topic_name=topic.name) }}>{{ topic.name }}</a>
+                    {#unsub button#}
+                    <a href={{ url_for('unsub_topic',topic_name=topic.name,redir="subscriptions") }} class = "
                         btn btn-warning btn-xs"
-                role="button">-</a>
-            </h4>
-        </div>
-    {% endfor %}
-{% else %}
-    You aren't subscribed to any topics.
-{% endif %}
+                    role="button">-</a>
+                </h4>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>You aren't subscribed to any topics.</h4> Click the <a
+            href='#' class="btn btn-success
+                btn-xs" role="button">+</a> tag to subscribe to topics that interest you on the <a
+            href={{ url_for('view_threads') }}> View Threads </a> page.
+    {% endif %}
 
 {% endblock %}
