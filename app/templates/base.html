@@ -34,11 +34,11 @@
                 {% if current_user.is_authenticated %}
                     <div class="navbar-collapse collapse navbar-right">
                         <ul class="nav navbar-nav nav-item dropdown">
-                            <li><a href="{{ url_for('alerts') }}"><img width="27px" src="static/images/icons/notif.svg" alt=""></button></a></li>
+                            <li><a href="{{ url_for('alerts') }}"><img width="27px" src="/static/images/icons/notif.svg" alt=""></button></a></li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
-                                    <img width="27px" src="static/images/icons/user-2.svg" alt=""> {{ current_user.username }}
+                                    <img width="27px" src="/static/images/icons/user-2.svg" alt=""> {{ current_user.username }}
                                 </a>
                                 <ul class="dropdown-menu nav" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item"
