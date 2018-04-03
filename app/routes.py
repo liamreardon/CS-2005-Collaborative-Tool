@@ -75,7 +75,7 @@ def testing():
 
 # region Public Threads and Topics
 @app.route('/create_thread', methods=['GET', 'POST'])
-@login_required()
+@login_required
 def create_thread():
     """
     Create a new thread with a title, a new topic,
@@ -96,7 +96,7 @@ def create_thread():
 
 
 @app.route('/view_threads', methods=['GET', 'POST'])
-@login_required()
+@login_required
 def view_threads():
     """
     Insert all the threads within the database into
@@ -108,7 +108,7 @@ def view_threads():
 
 
 @app.route('/view_thread/<string:id>', methods=['GET', 'POST'])
-@login_required()
+@login_required
 def view_thread(id):
     """
     Display all the posts within a thread and include
@@ -127,7 +127,7 @@ def view_thread(id):
 
 
 @app.route('/view_thread/edit_post/<string:id>', methods=['GET', 'POST'])
-@login_required()
+@login_required
 def edit_post(id):
     """
     Identify a post created by the user and allow the user
@@ -145,7 +145,7 @@ def edit_post(id):
 
 
 @app.route('/edit_thread/<string:id>', methods=['GET', 'POST'])
-@login_required()
+@login_required
 def edit_thread(id):
     """
     Identify a thread created by the user and allow the user 
@@ -164,6 +164,7 @@ def edit_thread(id):
 
 
 @app.route('/view_topic/<string:topic_name>')
+@login_required
 def view_topic(topic_name):
     topic = Topic.get(topic_name)
     threads = topic.threads
