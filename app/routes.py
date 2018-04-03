@@ -75,11 +75,11 @@ def testing():
 
 # region Public Threads and Topics
 @app.route('/create_thread', methods=['GET', 'POST'])
-# @login_required()
+@login_required()
 def create_thread():
     """
-    Create a new thread with a title and a new post
-    with a body and commits it to the database.
+    Create a new thread with a title, a new topic,
+    and a new post and commits it to the database.
     """
     form = ThreadForm()
     if form.validate_on_submit():
@@ -96,28 +96,26 @@ def create_thread():
 
 
 @app.route('/view_threads', methods=['GET', 'POST'])
-# @login_required()
+@login_required()
 def view_threads():
     """
     Insert all the threads within the database into
-    a table and display the id, title, author, and
-    datetime of each thread.
+    a table and display the title, author,
+    datetime and topic of each thread.
     """
-    threads = Thread.query.filter_by(group = None).all()  # topic.author.username
+    threads = Thread.query.filter_by(group = None).all()
     return render_template('view_threads.html', threads=threads)
 
 
 @app.route('/view_thread/<string:id>', methods=['GET', 'POST'])
-# @login_required()
+@login_required()
 def view_thread(id):
     """
     Display all the posts within a thread and include
     a form to create a new post within that thread.
     """
     posts = Post.query.filter_by(thread_id=id).all()
-    # posts = Thread.query.filter_by(id=id).first().posts
     current_thread = Thread.query.get(id)
-
     form = PostForm()
     if form.validate_on_submit():
         new_post = Post(title=current_thread.name, text=form.post.data, user=current_user)
@@ -129,7 +127,7 @@ def view_thread(id):
 
 
 @app.route('/view_thread/edit_post/<string:id>', methods=['GET', 'POST'])
-# @login_required()
+@login_required()
 def edit_post(id):
     """
     Identify a post created by the user and allow the user
@@ -147,15 +145,13 @@ def edit_post(id):
 
 
 @app.route('/edit_thread/<string:id>', methods=['GET', 'POST'])
-# @login_required()
+@login_required()
 def edit_thread(id):
     """
     Identify a thread created by the user and allow the user 
     to edit that thread.
     """
     current_thread = Thread.query.get(id)
-    # current_topic = Topic.query.get(name=id)
-
     form = ThreadForm(thread=current_thread.name, topic=current_thread.topic.name, post=current_thread.posts[0].text)
     if form.validate_on_submit():
         current_thread.name = form.thread.data
