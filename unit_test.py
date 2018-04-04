@@ -18,6 +18,7 @@ class UnitTest(unittest.TestCase):
         the database path is changed to test.db
         the database is then initialized
         """
+        app
         app.config.from_object(TestConfig)
         app.config['WTF_CSRF_ENABLED'] = False
         app.testing = True
@@ -178,9 +179,42 @@ class UnitTest(unittest.TestCase):
 
     # endregion
 
-    #region Post Request Tests
-    #todo: these
-    #endregion
+    # region Post Request Tests
+
+    def test_make_post(self):
+        """
+        Makes a post request to create a new post and asserts:
+            the user is redirected to /threads
+            a post is created in the DB
+            a thread is created in the DB
+            the post has the appropriate fields
+        """
+        self.login('test_user', 'test_password')
+        rv = self.app.post('/create_thread', data=dict(
+            thread='test_post_name',
+            topic='test_topic',
+            post='this is a test post'
+        ), follow_redirects=True)
+        post = Post.query.all()[0]
+        thread = Thread.query.all()[0]
+        self.assertTrue(post is not None)
+        self.assertTrue(thread is not None)
+        self.assertTrue(b'<title>\n    Threads\n</title>' in rv.data)
+        self.assertTrue(post.title == 'test_post_name')
+        self.assertTrue(post.text == 'this is a test post')
+
+    def test_make_group(self):
+        """
+        Makes a post request and asserts a group is created in the DB
+        """
+        self.login('test_user', 'test_password')
+        rv = self.app.post('/create_group', data=dict(
+            title='test_group_title',
+            descr='description of test group'
+        ), follow_redirects=True)
+        self.assertTrue(Group.query.all() is not [])
+
+    # endregion
 
 
 if __name__ == '__main__':
