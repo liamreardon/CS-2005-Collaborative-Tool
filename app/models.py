@@ -322,7 +322,6 @@ class Thread(db.Model):
         return True
 
 
-
 class Topic(db.Model):
     """
     Topics are tags that can be added to threads
@@ -395,7 +394,7 @@ class Group(db.Model):
         """
         self.users.append(usr)
 
-    def add_users(self,users):
+    def add_users(self, users):
         """
         adds a list of users to the group
         """
@@ -404,5 +403,3 @@ class Group(db.Model):
 
     def __repr__(self):
         return "Group " + self.name
-
-
