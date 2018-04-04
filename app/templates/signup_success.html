@@ -2,7 +2,7 @@
 
 {% block head %}
     {{ super() }}
-    
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
 {% endblock %}
 
 {% block title %}
@@ -11,7 +11,8 @@
 
 
 {% block content %}
-	<div class="text-center container">
+
+	<div class="text-center container well">
 		<div class="jumbotron text-xs-center">
 		  <h1 class="display-3">Thank You!</h1>
 		  <p class="lead">You have sucessfully registered, please continue to login<p>
