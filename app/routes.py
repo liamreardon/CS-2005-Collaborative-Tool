@@ -35,9 +35,13 @@ def signup():
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        flash('Thanks for registering!')
-        return redirect(url_for('login'))
+        return redirect(url_for('signup_success'))
     return render_template('signup.html', form=form)
+
+@app.route('/signup_success')
+def signup_success():
+    return render_template('signup_success.html')
+
 
 # region Public Threads and Topics
 @app.route('/create_thread', methods=['GET', 'POST'])

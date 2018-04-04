@@ -1,0 +1,23 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+    {{ super() }}
+    
+{% endblock %}
+
+{% block title %}
+    Success
+{% endblock %}
+
+
+{% block content %}
+	<div class="text-center container">
+		<div class="jumbotron text-xs-center">
+		  <h1 class="display-3">Thank You!</h1>
+		  <p class="lead">You have sucessfully registered, please continue to login<p>
+		  <p class="lead">
+		    <a class="btn btn-primary btn-sm" href="{{ url_for('login') }}" role="button">Continue to login</a>
+		  </p>
+		</div>
+	</div>
+{% endblock %}
