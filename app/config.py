@@ -15,6 +15,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + dbPath
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+#meant for unittest testing purposes
 class TestConfig:
     TESTING = True
     # Flask
