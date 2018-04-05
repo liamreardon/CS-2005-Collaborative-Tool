@@ -1,11 +1,25 @@
+"""
+unit_test.py
+A unit testing module for the cs2005 website
+Tests all 5 major modules for functionality
+Including simulating HTML get and posts requests
+setUp:
+    the setup method is run before each unit test
+    it changes the Flask app configuration to the test config
+    and changes the SQL database to a dummy test database
+    it then initializes the database and allows each test to run
+tearDown:
+    tearDown is run after each unit test
+    it removes the database session and drops all the tables, effectively removing the DB
+    it then reloads the standard Flask config file
+"""
+
 import os
 from app import app
 import unittest
-import tempfile
 from app.config import Config, TestConfig
 from app.models import *
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash
 
 
 class UnitTest(unittest.TestCase):
@@ -18,7 +32,6 @@ class UnitTest(unittest.TestCase):
         the database path is changed to test.db
         the database is then initialized
         """
-        app
         app.config.from_object(TestConfig)
         app.config['WTF_CSRF_ENABLED'] = False
         app.testing = True
