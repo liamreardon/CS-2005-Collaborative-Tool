@@ -16,8 +16,10 @@
     <br>
     {% for post in current_user.get_feed() %}
         <div class="well">
+            <a href="{{ url_for('view_thread', id=post.thread.id) }}">
             <h4>{{ post.author }}</h4>
             <em>{{ post.title }} - {{ post.get_time() }}</em>
+            </a>
             <hr>
             {{ post.text }}
             {% if post.author_id==current_user.id %}
