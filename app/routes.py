@@ -92,7 +92,6 @@ def login():
 def signup():
      """Creates a new User object from the data passed throught the webpage's username, password and email fields, then redirects to the signup_success HTML page 
      """
-
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
@@ -106,7 +105,6 @@ def signup():
 def signup_success():
     """Confirms user registration success upon passing valid username, password and email data in their respective fields
     """
-
     return render_template('signup_success.html')
 
 
@@ -116,7 +114,6 @@ def signup_success():
 def create_thread():
     """Create a new thread with a title, a new topic, and a new post and commits it to the database.
     """
-
     form = ThreadForm()
     if form.validate_on_submit():
         new_thread = Thread()
@@ -137,7 +134,6 @@ def create_thread():
 def view_threads():
     """Insert all the threads within the database into a table and display the title, author, datetime and topic of each thread.
     """
-
     threads = Thread.query.filter_by(group = None).all()
     return render_template('view_threads.html', threads=threads)
 
@@ -147,7 +143,6 @@ def view_threads():
 def view_thread(id):
     """Display all the posts within a thread and include a form to create a new post within that thread.
     """
-
     posts = Post.query.filter_by(thread_id=id).all()
     current_thread = Thread.query.get(id)
     form = PostForm()
@@ -165,7 +160,6 @@ def view_thread(id):
 def edit_post(id):
     """Identify a post created by the user and allow the user to edit that post.
     """
-
     current_post = Post.query.get(id)
 
     form = PostForm(post=current_post.text)
@@ -182,7 +176,6 @@ def edit_post(id):
 def edit_thread(id):
     """Identify a thread created by the user and allow the user to edit that thread.
     """
-
     current_thread = Thread.query.get(id)
     form = ThreadForm(thread=current_thread.name, topic=current_thread.topic.name, post=current_thread.posts[0].text)
     if form.validate_on_submit():
@@ -200,7 +193,6 @@ def edit_thread(id):
 def view_topic(topic_name):
     """Display a list of threads based on topic
     """
-
     topic = Topic.get(topic_name)
     threads = topic.threads
     return render_template('view_topic.html', threads=threads)
@@ -215,7 +207,6 @@ def view_topic(topic_name):
 def subscriptions():
     """Displays to users their respective thread, topic, and group subscriptions
     """
-
     return render_template('subscriptions.html')
 
 
@@ -224,7 +215,6 @@ def subscriptions():
 def sub_topic(topic_name):
     """Appends an additional topic into the user's list of subscribed topics
     """
-
     current_user.topics.append(Topic.get(topic_name))
     db.session.commit()
     redir = request.args.get('redir')
@@ -238,7 +228,6 @@ def sub_topic(topic_name):
 def sub_thread(thread_id):
      """Appends an additional thread into the user's list of subscribed threads, assuming that the thread doesn't already exist within the user's list of subscribed threads
      """
-
     thread = Thread.query.filter_by(id=thread_id).first_or_404()
     if thread not in current_user.subs:
         current_user.subs.append(thread)
@@ -254,7 +243,6 @@ def sub_thread(thread_id):
 def unsub_topic(topic_name):
     """Removes a topic from the user's list of subscribed topics
     """
-
     current_user.topics.remove(Topic.get(topic_name))
     db.session.commit()
     redir = request.args.get('redir')
@@ -268,7 +256,6 @@ def unsub_topic(topic_name):
 def unsub_thread(thread_id):
     """Removes a thread from the user's list of subscribed topics
     """
-
     thread = Thread.query.filter_by(id=thread_id).first_or_404()
     if thread in current_user.subs:
         current_user.subs.remove(thread)
@@ -287,7 +274,6 @@ def unsub_thread(thread_id):
 def groups():
     """View a list of all discussion groups the user has access to
     """
-
     rem = request.args.get("rem")
     groups = current_user.groups
     if rem is not None:
@@ -302,7 +288,6 @@ def groups():
 def create_group():
     """Creates the discussion group, along with it's title and description
     """
-
     form = CreateGroupForm()
     if form.validate_on_submit():
         name = form.title.data
@@ -318,7 +303,6 @@ def create_group():
 def manage_group():
     """Allows the user to edit a discussion group they have access to, which permits edits such as adding users and removing them (including the current user themselves if they wish)
     """
-
     group_id = request.args.get('id')
     group = Group.query.filter_by(id=group_id).first()
     form = AddUserToGroupForm()
@@ -340,7 +324,6 @@ def manage_group():
 def view_group(id):
     """Displays the chosen discussion group's threads and posts to the user, while prompting them to either create a new post, new thread, or a new topic
     """
-
     group = Group.query.filter_by(id=id).first()
     form = AddThreadToGroup()
     if form.validate_on_submit():
@@ -365,7 +348,6 @@ def view_group(id):
 def home():
     """Renders the homepage template for the website
     """
-
     return render_template('home.html', name=current_user.username)
 
 
@@ -374,7 +356,6 @@ def home():
 def logout():
     """Logs the user out of their user profile, then redirects to the login webapge
     """
-
     logout_user()
     return redirect(url_for('login'))
 
@@ -384,7 +365,6 @@ def logout():
 def alerts():
     """Displays any unread notifications to the users, which pertain to topics, threads and posts
     """
-
     return render_template('alerts.html', name=current_user.username)
 
 
@@ -395,7 +375,6 @@ def alerts():
 def user(username):
     """Displays the user's profile based on their username, which also reveals a list of posts they've made on the website
     """
-
     user = User.query.filter_by(username=username).first_or_404()
     posts = [
         {'author': user, 'body': 'Test post #1'},
@@ -409,7 +388,6 @@ def user(username):
 def edit_profile():
     """Retrieves the current user's username and about me (i.e biography) data from the server database, then overrides the user's username and about me data with the input passed through the form
     """
-
     form = EditProfileForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
