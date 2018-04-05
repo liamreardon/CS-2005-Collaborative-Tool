@@ -605,18 +605,15 @@ class Group(db.Model):
             self.add_user(user)
         db.session.commit()
 
+    def add_user(self, usr):
+        """Adds a single user to the discussion group"""
+        self.users.append(usr)
 
-def add_user(self, usr):
-    """Adds a single user to the discussion group"""
-    self.users.append(usr)
+    def add_users(self, users):
+        """Adds a list of users to the discussion group"""
+        for usr in users:
+            self.add_user(usr)
 
-
-def add_users(self, users):
-    """Adds a list of users to the discussion group"""
-    for usr in users:
-        self.add_user(usr)
-
-
-def __repr__(self):
-    """Represents and returns the title of the discussion group as a string"""
-    return "Group " + self.name
+    def __repr__(self):
+        """Represents and returns the title of the discussion group as a string"""
+        return "Group " + self.name
