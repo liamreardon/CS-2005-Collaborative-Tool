@@ -1,4 +1,6 @@
-"""models.py is a Python module that holds information on all persistent classes used in the prototype. Classes are implemented using Flask-SQLAlchemy
+"""
+models.py is a Python module that holds information on all persistent classes used in the prototype.
+Classes are implemented using Flask-SQLAlchemy
 
 Classes
 -------
@@ -16,11 +18,6 @@ Topic : db.Model
     Topics are user-submitted strings that are used to classify and group threads by topic
 Group : db.Model
     Discussion group with a list of users and threads made within each respective group
-
-todo
-----
-    * consider refactoring all id and otherwise private variables to have a leading underscore
-
 """
 
 from app import db
@@ -36,7 +33,9 @@ from hashlib import md5
 # Outside of this module they should not need to be referenced directly
 
 class ThreadSubscriptions(db.Model):
-    """ThreadSubscriptions is an association table for users and threads. An association table is used to allow for notifications to appear on the client side.
+    """
+    ThreadSubscriptions is an association table for users and threads.
+    An association table is used to allow for notifications to appear on the client side.
     
     Attributes
     ----------
@@ -52,7 +51,6 @@ class ThreadSubscriptions(db.Model):
         The thread currently subscribed to by the user.
     unseen: Boolean 
         Returns True if user has unread posts, otherwise remain False
-
     """
 
     __tablename__ = 'thread_subscriptions'
@@ -72,7 +70,9 @@ class ThreadSubscriptions(db.Model):
 
 
 class TopicSubscriptions(db.Model):
-    """TopicSubscriptions is an association table for users and discussion group topics. An association table is used to allow for notifications to appear on the client side.
+    """
+    TopicSubscriptions is an association table for users and discussion group topics.
+    An association table is used to allow for notifications to appear on the client side.
     
     Attributes
     ----------
@@ -88,7 +88,6 @@ class TopicSubscriptions(db.Model):
         The topic used to categorize multiple threads
     unseen: Boolean 
         True if user has unread posts pertaining to a particular topic, otherwise remain False
-
     """
 
     __tablename__ = 'topic_subscriptions'
@@ -116,7 +115,9 @@ group_user_association = db.Table('group_user', db.metadata,
 # endregion
 
 class User(UserMixin, db.Model):
-    """The User class is used to store user profile information, such as username, password, identification reference (id), email, and lists of posts/threads/discussion group topics related to the user.
+    """
+    The User class is used to store user profile information, such as username, password,
+    identification reference (id), email, and lists of posts/threads/discussion group topics related to the user.
 
     Attributes
     ----------
@@ -142,7 +143,6 @@ class User(UserMixin, db.Model):
         A list of thread topics the user has subscriptions to
 
     """
-
     # fields
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
@@ -162,7 +162,8 @@ class User(UserMixin, db.Model):
         back_populates="users")
 
     def __init__(self, username, password, email, **kwargs):
-        """Constructor for User class. Adds the required fields and commits the object to the database.
+        """
+        Constructor for User class. Adds the required fields and commits the object to the database.
         Parameters
         ----------
         username : String
@@ -173,7 +174,6 @@ class User(UserMixin, db.Model):
             Human readable string depecting the user's respective email address.
         **kwargs
             Arbitrary keyword arguements.
-
         """
 
         self.username = username
@@ -233,7 +233,10 @@ class User(UserMixin, db.Model):
             digest, size)
 
     def __repr__(self):
-        """returns an error message should a user not have a username; otherwise, return the user's username as a String"""
+        """
+        returns an error message should a user not have a username;
+        otherwise, return the user's username as a String
+        """
         usrname = "USERNAME NOT SET"
         if self.username is not None:
             usrname = self.username
@@ -241,7 +244,8 @@ class User(UserMixin, db.Model):
 
 
 class Post(db.Model):
-    """The Post class is used to store user-created post information
+    """
+    The Post class is used to store user-created post information
     
     Attributes
     ----------
@@ -257,7 +261,6 @@ class Post(db.Model):
         reference to/relationship with User (1:n)
     thread_id : Integer
         reference to/relationship with Thread (1:n)
-
     """
 
     __tablename__ = "Post"
@@ -270,7 +273,8 @@ class Post(db.Model):
     thread_id = db.Column(db.Integer, db.ForeignKey('Thread.id'))
 
     def get_time(self, relative=True):
-        """Gets the time as a nicely formatted string
+        """
+        Gets the time as a nicely formatted string
 
         Parameters
         ----------
@@ -282,7 +286,6 @@ class Post(db.Model):
         String
             If True, display date relative to current time, eg. "2 hours from now".
             If False, display data as human readable string, eg. ""
-
         """
 
         diff = datetime.utcnow() - self.timestamp
@@ -298,12 +301,15 @@ class Post(db.Model):
             return str(int(diff.days)) + " days ago"
 
     def __init__(self, user, text, thread=None, title=None):
-        """Constructor for Post class. Adds the required fields and commits the object to the database. 
+        """
+        Constructor for Post class. Adds the required fields and commits the object to the database.
         
         Notes
         -----
-            If the reference to a thread is provided this post is automatically appended. Should the passed thread have no posts, this post will be considered the first post and initialize the thread.
-            Threads can only be initialized with posts that have a title; otherwise, the post will be appended as a child post to the thread
+            If the reference to a thread is provided this post is automatically appended. Should the passed thread have
+            no posts, this post will be considered the first post and initialize the thread.
+            Threads can only be initialized with posts that have a title;
+            otherwise, the post will be appended as a child post to the thread
             If no thread is passed, then this post must be added using add_post or add_first_post on the thread elsewhere
             
         Parameters
@@ -316,7 +322,6 @@ class Post(db.Model):
             Object indicating which thread the post is being made in
         title : String
             Human readable string acting as the title of the post
-
         """
 
         self.author = user
@@ -336,12 +341,14 @@ class Post(db.Model):
 
 
 class Thread(db.Model):
-    """The Thread class represents a single, user-created forum thread.
+    """
+    The Thread class represents a single, user-created forum thread.
 
     Notes
     -----
         Threads must be linked to a 'first post', which must have a title and ultimately the 'name' of the thread.
-        The first post can be initialized by passing it as an argument in the constructor; otherwise, use the add_first_post() method.
+        The first post can be initialized by passing it as an argument in the constructor;
+        otherwise, use the add_first_post() method.
     
     Attributes
     ----------
@@ -363,7 +370,6 @@ class Thread(db.Model):
         Reference to the group associated with the thread
     group : Group
         The group associated with the thread
-
     """
 
     __tablename__ = "Thread"
@@ -379,10 +385,12 @@ class Thread(db.Model):
     group = db.relationship('Group', back_populates='threads')
 
     def __init__(self, first_post=None, topic=None):
-        """Constructor for Thread class. Adds the required fields and commits the object to the database. 
+        """
+        Constructor for Thread class. Adds the required fields and commits the object to the database.
         Note
         ----
-            Should the first_post parameter not equal None, then the title of the thread is set to the post title, and the user is automatically subscribed to the thread.
+            Should the first_post parameter not equal None, then the title of the thread is set to the post title,
+            and the user is automatically subscribed to the thread.
 
         Parameters
         ----------
@@ -400,7 +408,9 @@ class Thread(db.Model):
         db.session.commit()
 
     def add_first_post(self, first_post):
-        """Adds the first post to the top of the thread, then sets the title of the thread to the title of the post and subscribes the user to the thread automatically.
+        """
+        Adds the first post to the top of the thread, then sets the title of the thread to the title of the post and
+        subscribes the user to the thread automatically.
 
         Parameter
         ---------
@@ -414,7 +424,8 @@ class Thread(db.Model):
         self.subbed = [first_post.author]
 
     def add_post(self, post):
-        """ Adds a post to the thread and notifies the users, while automatically subscribes the user who posted to this thread
+        """
+        Adds a post to the thread and notifies the users, while automatically subscribes the user who posted to this thread
 
         Parameter
         ---------
@@ -428,7 +439,8 @@ class Thread(db.Model):
         self.subbed.append(post.author)
 
     def add_topic(self, topic):
-        """Adds a topic to the thread
+        """
+        Adds a topic to the thread
 
         Parameter
         ---------
@@ -458,12 +470,15 @@ class Thread(db.Model):
 
 
 class Topic(db.Model):
-    """The Topic class represents user-created tags that can be added to threads, which users can then subscribe to in order to be notified about any post made with that topic.
+    """
+    The Topic class represents user-created tags that can be added to threads, which users can then
+    subscribe to in order to be notified about any post made with that topic.
 
     Notes
     -----
     Topics must have unique names; attempting to create a topic with a name that already exists will throw an error.
-    You can do a check for a name manually and create the topic if the name doesn't exist. Alternatively, use the class method get() to return or create the topic when appropriate
+    You can do a check for a name manually and create the topic if the name doesn't exist.
+    Alternatively, use the class method get() to return or create the topic when appropriate
 
     Attributes
     ----------
@@ -477,13 +492,8 @@ class Topic(db.Model):
         Reference to the list of users subscribed to the topic
     users : User
         The list of users subscribed to the topic
-    
-    todo
-    ----
-    can we avoid the singleton shenanigans?
-    
     """
-    
+
     __tablename__ = 'Topic'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True)
@@ -502,7 +512,8 @@ class Topic(db.Model):
             return q
 
     def __init__(self, name):
-        """Constructor for Topic class. Adds the required fields and commits the object to the database.
+        """
+        Constructor for Topic class. Adds the required fields and commits the object to the database.
         Note
         ----
         If the name of the topic is already used for another topic object, then raise a ValueError.
@@ -539,8 +550,9 @@ class Topic(db.Model):
 
 
 class Group(db.Model):
-    """The Group class represents user-created discussion groups that are capable of creating their own threads, with the exception of a few select users are capable of accessing any of these group-specific threads.
-
+    """
+    The Group class represents user-created discussion groups that are capable of creating their own threads,
+    with the exception of a few select users are capable of accessing any of these group-specific threads.
     Attributes
     ----------
     id : Integer
@@ -568,23 +580,24 @@ class Group(db.Model):
         back_populates="groups")
 
     def __init__(self, name, descr, user=None):
-    """Constructor for Group class.  Adds the required fields and commits the object to the database.
+        """
+        Constructor for Group class.  Adds the required fields and commits the object to the database.
 
-    Note
-    ----
-    If there is no user passed initially (i.e user = None), then the add_user() and add_users() methods are to be referred to add users into the discussion group. Otherwise, the constructor method will create a group with no members in it.
+        Note
+        ----
+        If there is no user passed initially (i.e user = None), then the add_user() and add_users() methods are to be
+        referred to add users into the discussion group. Otherwise, the constructor method will create a group with
+        no members in it.
 
-    Parameters
-    ----------
-    name : String
-        Name/Title of the discussion group
-    descr : String
-        Brief description/summary of rules for the discussion group
-    user : String
-        The user to be added to the discussion group
-
-    """
-
+        Parameters
+        ----------
+        name : String
+            Name/Title of the discussion group
+        descr : String
+            Brief description/summary of rules for the discussion group
+        user : String
+            The user to be added to the discussion group
+        """
         db.session.add(self)
         self.name = name
         self.descr = descr
@@ -592,15 +605,18 @@ class Group(db.Model):
             self.add_user(user)
         db.session.commit()
 
-    def add_user(self, usr):
-        """Adds a single user to the discussion group"""
-        self.users.append(usr)
 
-    def add_users(self, users):
-        """Adds a list of users to the discussion group"""
-        for usr in users:
-            self.add_user(usr)
+def add_user(self, usr):
+    """Adds a single user to the discussion group"""
+    self.users.append(usr)
 
-    def __repr__(self):
-        """Represents and returns the title of the discussion group as a string"""
-        return "Group " + self.name
+
+def add_users(self, users):
+    """Adds a list of users to the discussion group"""
+    for usr in users:
+        self.add_user(usr)
+
+
+def __repr__(self):
+    """Represents and returns the title of the discussion group as a string"""
+    return "Group " + self.name
