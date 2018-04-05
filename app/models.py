@@ -23,7 +23,6 @@ Group : db.Model
 from app import db
 from datetime import datetime, timedelta
 from flask_login import UserMixin
-from sqlalchemy import desc
 from sqlalchemy.ext.associationproxy import association_proxy
 from hashlib import md5
 
@@ -191,7 +190,6 @@ class User(UserMixin, db.Model):
                 return True
         return False
 
-    # todo this needs to be tested
     def get_unseen_threads(self):
         """returns True if the user has unseen threads"""
         threads = []
@@ -200,7 +198,6 @@ class User(UserMixin, db.Model):
                 threads.append(sub.thread)
         return threads
 
-    # todo this needs to be tested
     def get_unseen_topics(self):
         """returns True if the user has unseen topics"""
         topics = []

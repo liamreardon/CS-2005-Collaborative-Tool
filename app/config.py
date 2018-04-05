@@ -18,7 +18,6 @@ The os module is imported to create the path to the database files
 import os
 
 # get DB directory
-# basedir = os.path.abspath(os.pardir)
 basedir = os.path.dirname(__file__)
 dbPath = basedir + "/data/data.db"
 test_path = basedir + "/data/test.db"

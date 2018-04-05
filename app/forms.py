@@ -86,7 +86,8 @@ class RegistrationForm(FlaskForm):
 
     """
     username = StringField('', [validators.Length(min=4, max=25)], render_kw={"placeholder": "Username"})
-    email = StringField('', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)], render_kw={"placeholder": "Email"})
+    email = StringField('', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)],
+                        render_kw={"placeholder": "Email"})
     password = PasswordField('', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
@@ -198,7 +199,9 @@ class CreateGroupForm(FlaskForm):
 
     """
     title = StringField('', [validators.Length(min=4, max=64)], render_kw={'placeholder': 'Title'})
-    descr = TextAreaField('', validators=[InputRequired(), Length(min=1, max=1000)], render_kw={'placeholder': 'Group Description'})
+    descr = TextAreaField('', validators=[InputRequired(), Length(min=1, max=1000)],
+                          render_kw={'placeholder': 'Group Description'})
+
 
 class AddUserToGroupForm(FlaskForm):
     """AddUserToGroupForm is a class which creates the forms and variables for adding a user into a discussion group
@@ -214,6 +217,7 @@ class AddUserToGroupForm(FlaskForm):
 
     """
     username = StringField('', [validators.Length(min=4, max=64)], render_kw={'placeholder': 'Username'})
+
 
 class AddThreadToGroup(FlaskForm):
     """AddThreadToGroup is a class which creates the forms and variables for adding a thread to a discussion group

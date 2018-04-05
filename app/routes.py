@@ -2,8 +2,6 @@
 from flask import render_template, session, redirect, url_for, request, flash
 import os
 # --- Custom imports ---
-from app import app
-from app.models import *
 from app.forms import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -11,7 +9,6 @@ from app.loaders import *
 from app.models import *
 
 
-# from app.forms import EditProfileForm
 
 
 @app.route('/')
@@ -251,8 +248,6 @@ def manage_group():
 def view_group(id):
     group = Group.query.filter_by(id=id).first()
     form = AddThreadToGroup()
-    #todo: validate if user is member of the group
-    #todo add form for posting
     if form.validate_on_submit():
         new_thread = Thread()
         new_topic = Topic.get(form.topic.data)
