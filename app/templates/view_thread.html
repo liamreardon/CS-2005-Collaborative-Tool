@@ -22,7 +22,8 @@ View Thread
     {% endif %}
     {% for post in posts %}
         <div class="well">
-            <h4>{{ post.author }}</h4>
+            <h4>
+                <a href="{{ url_for('user', username = post.author) }}">{{ post.author }}</a></h4>
             <em>{{ post.get_time() }}</em>
             <hr>
             {{ post.text }}

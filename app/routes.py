@@ -90,8 +90,8 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-     """Creates a new User object from the data passed throught the webpage's username, password and email fields, then redirects to the signup_success HTML page 
-     """
+    """Creates a new User object from the data passed throught the webpage's username, password and email fields, then redirects to the signup_success HTML page
+    """
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
@@ -226,8 +226,8 @@ def sub_topic(topic_name):
 @app.route('/sub_thread/<int:thread_id>')
 @login_required
 def sub_thread(thread_id):
-     """Appends an additional thread into the user's list of subscribed threads, assuming that the thread doesn't already exist within the user's list of subscribed threads
-     """
+    """Appends an additional thread into the user's list of subscribed threads, assuming that the thread doesn't already exist within the user's list of subscribed threads
+    """
     thread = Thread.query.filter_by(id=thread_id).first_or_404()
     if thread not in current_user.subs:
         current_user.subs.append(thread)

@@ -23,7 +23,9 @@
                     {% if thread.posts[0].author_id==current_user.id %}
                         <td><a href="edit_thread/{{ thread.id }}" class="btn btn-default">Edit</a></td>
                     {% else %}
-                        <td>{{ thread.posts[0].author }}</td>
+                        <td>
+                            <a href="{{ url_for('user', username = thread.posts[0].author.username) }}">{{ thread.posts[0].author }}</a>
+                        </td>
                     {% endif %}
                     <td>{{ thread.posts[0].get_time() }}</td>
                     <td>
