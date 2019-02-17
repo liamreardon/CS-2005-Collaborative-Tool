@@ -1,4 +1,4 @@
-# CS 2005 Reddit
+# CS 2005 Collaborative Tool
 
 The prototype of our collaborative tool for students in CS 2005 is a minimum viable product, meaning it has just enough features to satisfy users and provide feedback for future development. 
 
