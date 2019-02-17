@@ -8,7 +8,7 @@ These features work seamlessly and would provide basic functionality for student
 
 # Getting Started
 
-1. Create and activate Virtual Environment with needed dependencies
+1. Create and activate Virtual Environment with dependencies as stated in `requirements.txt`
 2. `export FLASK_APP=website.py`
 3. `flask run`
 
